@@ -1,0 +1,294 @@
+:root{
+  --bg:#555675; --wax:#FCE4EC; --outline:#000; --shadow:#3B3A55;
+  --flame-out:#FA8C00; --flame-in:#FFD400; --k:1;
+  --font:"Comic Neue","Comic Sans MS","Chalkboard SE","Marker Felt",cursive;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:#fff;font-family:var(--font);font-weight:700}
+.screen{display:none;min-height:100svh;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:calc(24px + env(safe-area-inset-top,0px)) 20px calc(32px + env(safe-area-inset-bottom,0px))}
+.screen.active{display:flex;animation:fade .5s ease}
+@keyframes fade{from{opacity:0}}
+
+h1{font-size:clamp(2rem,8vw,3rem);margin:0 0 1.2rem;line-height:1.15}
+.prompt{font-size:clamp(1.8rem,7.5vw,2.6rem);margin:0;letter-spacing:.02em}
+.hint{min-height:1.5em;margin:1.2rem 0 0;font-size:1rem;opacity:.85}
+
+.btn{font:inherit;font-size:1.5rem;background:var(--flame-in);color:#000;border:4px solid var(--outline);
+  border-radius:16px;padding:.5em 1.8em;box-shadow:6px 6px 0 var(--outline);cursor:pointer;transition:transform .1s,box-shadow .1s}
+.btn:active{transform:translate(4px,4px);box-shadow:2px 2px 0 var(--outline)}
+.btn:focus-visible{outline:4px solid #fff;outline-offset:4px}
+
+/* ---------- countdown ---------- */
+#blow{justify-content:flex-start;padding-top:calc(9vh + env(safe-area-inset-top,0px))}
+.count{font-size:clamp(4.5rem,22vw,7rem);line-height:1;min-height:1.1em;margin-top:.15em}
+.count.pop{animation:pop .45s ease}
+@keyframes pop{from{transform:scale(1.5);opacity:0}}
+
+/* ---------- candle (cel-shaded anime/cartoon) ---------- */
+.scene{zoom:var(--k);padding-top:250px;margin-top:.2rem;position:relative}
+.candle{position:relative;width:120px;height:300px;animation:rise .9s cubic-bezier(.2,.9,.3,1.25) both}
+@keyframes rise{from{opacity:0;transform:translateY(60px)}}
+.body{position:relative;z-index:2;width:100%;height:100%;border:4px solid var(--outline);border-radius:0 0 12px 12px;
+  background:linear-gradient(90deg,#FFF4F8 0 16%,var(--wax) 16% 64%,#F6C6D8 64% 100%)}
+.body::after{content:"";position:absolute;left:8px;top:44px;bottom:26px;width:6px;border-radius:6px;background:#fff;opacity:.9}
+.pool{position:absolute;z-index:2;left:-4px;right:-4px;top:-17px;height:34px;border:4px solid var(--outline);border-radius:50%;
+  background:radial-gradient(ellipse at 50% 55%,#F7AFC6 0 26%,#FFF4F8 28%)}
+.drip{position:absolute;left:calc(100% - 2px);top:110px;width:26px;height:54px;background:var(--wax);
+  border:4px solid var(--outline);border-left:0;border-radius:0 14px 24px 0}
+.drip.d2{left:20px;top:8px;width:24px;height:80px;border:4px solid var(--outline);border-top:0;border-radius:0 0 14px 14px;
+  background:linear-gradient(90deg,#FFF4F8 0 30%,var(--wax) 30%)}
+.wick{position:absolute;z-index:3;left:calc(50% - 3px);bottom:calc(100% - 2px);width:6px;height:30px;
+  background:linear-gradient(#2a2a2a,#000);border-radius:3px 3px 0 0;transform:rotate(7deg);transform-origin:bottom}
+.wick::after{content:"";position:absolute;top:-3px;left:-1px;width:8px;height:10px;border-radius:50%;background:var(--flame-out);opacity:0}
+.wick.ember::after{box-shadow:0 0 10px 4px var(--flame-out);animation:ember 1.6s ease-out forwards}
+@keyframes ember{from{opacity:1}to{opacity:0}}
+.candle::before{content:"";position:absolute;z-index:0;left:-16px;right:-16px;bottom:-9px;height:22px;border-radius:50%;
+  background:#0f0818}
+.shadow{position:absolute;z-index:0;left:0;bottom:-3px;width:120px;height:300px;background:var(--shadow);
+  border-radius:50% 50% 0 0/5% 5% 0 0;transform-origin:50% 100%;transform:skewX(42deg) scaleY(.5);
+  -webkit-mask-image:linear-gradient(to top,#000 0,rgba(0,0,0,.55) 45%,rgba(0,0,0,.08) 100%);
+  mask-image:linear-gradient(to top,#000 0,rgba(0,0,0,.55) 45%,rgba(0,0,0,.08) 100%);
+  filter:blur(1.5px);animation:shadowflick 1.1s ease-in-out .7s infinite}
+@keyframes shadowflick{50%{transform:skewX(44.5deg) scaleY(.53)}}
+.shadow.out{animation:none;opacity:.25;transition:opacity .6s}
+body{overflow-x:clip}
+
+.glow{position:absolute;z-index:0;left:50%;bottom:calc(100% + 110px);width:380px;height:380px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,190,80,.55) 0,rgba(255,150,40,.18) 40%,transparent 68%);
+  transform:translate(-50%,50%);animation:glow 1.3s ease-in-out .7s infinite alternate backwards}
+@keyframes glow{from{scale:.92;opacity:.8}to{scale:1.06;opacity:1}}
+.glow.out{opacity:0;animation:none;transition:opacity .3s}
+
+.flame{position:absolute;z-index:1;left:calc(50% - 62px);bottom:calc(100% + 20px);width:125px;height:207px;
+  transform-origin:50% 100%;rotate:calc(var(--lean,0) * 1deg);transition:rotate .08s linear;
+  animation:ignite .8s .7s cubic-bezier(.2,1.6,.4,1) backwards,flicker 1.1s ease-in-out .7s infinite}
+@keyframes ignite{from{scale:0;opacity:0}}
+.flame i{position:absolute;left:50%;display:block;border-radius:0 50% 50% 50%;transform:scale(1.4,1.95) rotate(45deg)}
+.flame .outer{width:88px;height:88px;margin-left:-44px;bottom:42px;background:var(--flame-out)}
+.flame .mid{width:66px;height:66px;margin-left:-33px;bottom:37px;background:#FFB000}
+.flame .inner{width:44px;height:44px;margin-left:-22px;bottom:32px;background:var(--flame-in)}
+.flame .core{width:22px;height:22px;margin-left:-11px;bottom:28px;background:#FFF7CC}
+@keyframes flicker{
+  0%,100%{transform:scale(1,1) rotate(-1deg)}
+  25%{transform:scale(.97,1.05) rotate(1.5deg)}
+  50%{transform:scale(1.03,.96) rotate(-1.5deg)}
+  75%{transform:scale(.98,1.03) rotate(1deg)}
+}
+.flame.out{animation:none;opacity:0;scale:.2 .05;transition:scale .15s ease-in,opacity .12s}
+
+.smoke{position:absolute;z-index:1;left:50%;bottom:calc(100% + 24px);width:0;height:0}
+.smoke i{position:absolute;left:-12px;bottom:0;width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.6);filter:blur(4px);opacity:0}
+.smoke.go i{animation:smoke 2s ease-out forwards}
+.smoke i:nth-child(1){--x:-26px}
+.smoke i:nth-child(2){--x:20px;animation-delay:.25s}
+.smoke i:nth-child(3){--x:-8px;animation-delay:.5s}
+@keyframes smoke{0%{opacity:.8;transform:translate(0,0) scale(.5)}100%{opacity:0;transform:translate(var(--x),-190px) scale(2.6)}}
+#blow.shake{animation:shake .4s}
+@keyframes shake{20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+
+/* ---------- final screen ---------- */
+#final{justify-content:flex-start;gap:24px}
+.note{background:var(--wax);color:#000;border:4px solid var(--outline);border-radius:18px;
+  box-shadow:8px 8px 0 var(--shadow);padding:22px 24px;max-width:520px;font-size:1.2rem;line-height:1.5;text-align:left}
+.note p{margin:0 0 .8em}.note p:last-child{margin:0}
+.photos{display:flex;flex-wrap:wrap;gap:22px;justify-content:center;max-width:620px;padding-top:8px}
+.polaroid{margin:0;background:#fff;color:#000;border:4px solid var(--outline);padding:10px 10px 8px;width:160px;
+  transform:rotate(var(--r,0deg));box-shadow:5px 5px 0 var(--shadow)}
+.polaroid img,.polaroid .ph{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;border:3px solid var(--outline)}
+.polaroid .ph{background:var(--bg);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.9rem;padding:8px}
+.polaroid figcaption{margin-top:8px;font-size:.95rem}
+
+@media (prefers-reduced-motion:reduce){.flame{animation:none}.screen.active,.count.pop{animation:none}}
+
+/* ---------- ambient + final animations ---------- */
+.screen{position:relative;z-index:2}
+.sparkles,.balloons{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:1}
+.spark{position:absolute;bottom:-20px;left:var(--x);width:var(--s);height:var(--s);border-radius:50%;background:#FFE9A8;opacity:0;
+  animation:floatup var(--d) linear var(--dl) infinite}
+@keyframes floatup{0%{opacity:0;transform:translate(0,0)}15%{opacity:.8}100%{opacity:0;transform:translate(var(--dx),-105vh)}}
+#start h1{animation:bob 2.6s ease-in-out infinite}
+#start .btn{animation:pulse 1.6s ease-in-out infinite}
+.btn:active{animation:none}
+@keyframes bob{50%{transform:translateY(-10px)}}
+@keyframes pulse{50%{transform:scale(1.07)}}
+
+.mute{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:12px;z-index:20;display:none;width:48px;height:48px;
+  font-size:1.3rem;background:var(--flame-in);border:4px solid var(--outline);border-radius:50%;box-shadow:3px 3px 0 var(--outline);cursor:pointer}
+.mute.show{display:block}
+#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:10}
+#finalTitle span{display:inline-block;animation:letter .6s calc(var(--i) * .05s) cubic-bezier(.2,1.6,.4,1) both}
+@keyframes letter{from{opacity:0;transform:translateY(-40px) rotate(-12deg)}}
+.note{animation:popin .7s .3s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes popin{from{opacity:0;scale:.6}}
+.polaroid{animation:fly .8s calc(.7s + var(--i,0) * .25s) cubic-bezier(.2,1.2,.4,1) both;transition:transform .2s}
+.polaroid:hover{transform:rotate(0deg) scale(1.06)}
+@keyframes fly{from{opacity:0;transform:translateY(90px) rotate(calc(var(--r) * 4)) scale(.6)}}
+.balloon{position:absolute;bottom:-100px;left:var(--x);width:54px;height:66px;background:var(--c);border:4px solid var(--outline);
+  border-radius:50% 50% 50% 50%/46% 46% 54% 54%;animation:balloon var(--d) ease-in-out var(--dl) infinite}
+.balloon::after{content:"";position:absolute;left:50%;top:100%;width:2px;height:60px;background:var(--outline)}
+@keyframes balloon{0%{transform:translate(0,0) rotate(-4deg)}50%{transform:translate(18px,-60vh) rotate(5deg)}100%{transform:translate(-6px,-120vh) rotate(-4deg)}}
+@media (prefers-reduced-motion:reduce){.balloon,.spark,.candle,.glow,#start h1,#start .btn{animation:none}}
+
+/* ================= Romantic theme ================= */
+:root{--sky:linear-gradient(180deg,#120a24 0%,#2b1445 55%,#5a2350 100%);--accent:#ff5c93;--gold:#ffd27a;--paper:#fff4ea;
+  --ink:#4a2336;--glow:255,170,110;--shadow:#1b0f26;--script:"Great Vibes","Brush Script MT",cursive;--serif:"Lora",Georgia,serif}
+html,body{background:none}
+body{background:var(--sky);background-attachment:fixed;min-height:100svh}
+h1{font-family:var(--script);font-weight:400}
+#start h1{font-size:clamp(2.8rem,12vw,4.4rem);color:#ffe9c7;text-shadow:0 0 22px rgba(var(--glow),.6)}
+.prompt{font-family:var(--script);font-weight:400;font-size:clamp(2.6rem,11vw,3.8rem);color:#ffe9c7;text-shadow:0 0 18px rgba(var(--glow),.7)}
+.count{color:var(--gold);text-shadow:0 0 24px rgba(var(--glow),.8)}
+.hint{color:#f3d9e4}
+.btn{background:linear-gradient(135deg,#ff8db5,#ff4f87);color:#fff;border:3px solid rgba(255,255,255,.35);border-radius:999px;
+  box-shadow:0 8px 26px rgba(255,79,135,.5);font-family:var(--script);font-size:2rem;font-weight:400;padding:.15em 1.6em}
+.btn:active{transform:scale(.96);box-shadow:0 4px 14px rgba(255,79,135,.5)}
+.btn.ghost{background:transparent;border:2px solid var(--gold);color:var(--gold);box-shadow:none;font-size:1.5rem;padding:.1em 1.2em;margin-top:.8rem}
+.mute{background:rgba(255,255,255,.15);border:2px solid var(--gold);box-shadow:0 0 14px rgba(var(--glow),.5);backdrop-filter:blur(6px)}
+.body{box-shadow:0 0 0 2px rgba(255,255,255,.07),0 0 46px rgba(var(--glow),.2)}
+.scene::before{content:"";position:absolute;left:50%;bottom:-40px;width:560px;height:150px;transform:translateX(-50%);z-index:0;
+  background:radial-gradient(ellipse,rgba(var(--glow),.42),transparent 68%)}
+
+/* breath meter */
+.meter{width:min(240px,70vw);height:12px;margin-top:1.1rem;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden;opacity:0;transition:opacity .4s}
+.meter.on{opacity:1}
+.meter i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+
+/* night bokeh background */
+#bokeh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+#bokeh i{position:absolute;border-radius:50%;filter:blur(2px);opacity:var(--o);
+  background:radial-gradient(circle,rgba(var(--c),.9) 0,rgba(var(--c),.35) 55%,transparent 72%);animation:bk 5s ease-in-out var(--dl) infinite alternate}
+@keyframes bk{to{opacity:calc(var(--o) * .35);transform:scale(1.15)}}
+#bokeh b{position:absolute;width:var(--z);height:var(--z);border-radius:50%;background:#fff;animation:tw 3s ease-in-out var(--dl) infinite}
+@keyframes tw{50%{opacity:.15}}
+#bokeh u{position:absolute;top:6%;right:8%;width:64px;height:64px;border-radius:50%;text-decoration:none;
+  background:radial-gradient(circle at 35% 35%,#fffbe8,#f3e3b5 60%,#d9c58f);box-shadow:0 0 40px 12px rgba(255,240,200,.35),0 0 120px 40px rgba(255,220,160,.16)}
+#bgphoto{position:fixed;inset:-20px;z-index:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1.5s}
+body.final #bgphoto{opacity:1}
+
+/* final scene */
+#final{justify-content:flex-start;padding-top:120px;gap:10px}
+.lights{position:absolute;top:0;left:0;right:0;height:90px;pointer-events:none;z-index:3}
+.lights svg{position:absolute;inset:0;width:100%;height:100%}
+.lights i{position:absolute;width:10px;height:15px;margin-left:-5px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:var(--c);
+  box-shadow:0 0 12px 4px var(--c);animation:twinkle 2.4s ease-in-out var(--dl) infinite}
+@keyframes twinkle{50%{opacity:.35;transform:scale(.85)}}
+#finalTitle{font-size:clamp(2.6rem,11vw,4.2rem);margin:0;color:var(--gold);text-shadow:0 0 24px rgba(var(--glow),.7)}
+#finalName{font-family:var(--script);font-weight:400;font-size:clamp(3.4rem,15vw,6rem);line-height:1;margin:0;color:transparent;
+  background:linear-gradient(100deg,#ffd27a,#fff6d8,#ff8fb1,#ffd27a);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;animation:shimmer 5s linear infinite}
+@keyframes shimmer{to{background-position:-250% 0}}
+.sub{font-family:var(--serif);font-style:italic;color:#f6dce8;margin:.2rem 0 0}
+.heart{font-size:2rem;color:var(--accent);filter:drop-shadow(0 0 10px var(--accent));animation:beat 1.2s ease-in-out infinite}
+@keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.3)}30%{transform:scale(1)}45%{transform:scale(1.2)}}
+.note{background:linear-gradient(160deg,var(--paper),#ffe9dc);color:var(--ink);border:1px solid rgba(255,210,122,.8);border-radius:6px;
+  box-shadow:0 18px 50px rgba(0,0,0,.45),0 0 40px rgba(var(--glow),.25);padding:26px 28px;max-width:540px;min-height:120px;
+  font-family:var(--serif);font-style:italic;font-size:1.15rem;line-height:1.7;rotate:-1deg}
+.note p.typing::after{content:"▌";color:var(--accent);animation:blink .7s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.photos{gap:34px 24px;max-width:680px;padding:30px 0 8px}
+.polaroid{background:#fffdf8;color:var(--ink);border:0;border-radius:3px;padding:10px 10px 4px;width:min(170px,42vw);transform-origin:50% -8px;
+  box-shadow:0 12px 28px rgba(0,0,0,.45);font-family:var(--script);font-size:1.4rem;
+  animation:fly .8s calc(.7s + var(--i,0) * .25s) cubic-bezier(.2,1.2,.4,1) both,swing 5s ease-in-out calc(var(--i,0) * -1.2s) infinite alternate}
+.polaroid::before{content:"";position:absolute;top:-14px;left:50%;width:14px;height:26px;margin-left:-7px;border-radius:3px;
+  background:linear-gradient(90deg,#c89b6a,#e8c496,#c89b6a);box-shadow:0 2px 4px rgba(0,0,0,.4)}
+.polaroid img,.polaroid .ph{border:0;border-radius:2px}
+.polaroid .ph{background:#e9dfe6;color:#6a4a5a;font-family:var(--serif);font-size:.8rem}
+@keyframes swing{from{rotate:-2.5deg}to{rotate:2.5deg}}
+.sign{font-family:var(--script);font-size:2.4rem;color:var(--gold);margin:.4rem 0 0;text-shadow:0 0 16px rgba(var(--glow),.5)}
+.balloon{width:auto;height:auto;background:none;border:0;border-radius:0;font-size:var(--fs,26px);filter:drop-shadow(0 0 8px rgba(255,120,170,.7))}
+.balloon::after{display:none}
+
+/* ===== final scene polish: name, letter card, photo frames ===== */
+#finalName{font-size:clamp(3rem,13vw,5.2rem);line-height:1.3;padding:.05em .2em .18em;margin:-.15em 0 0;max-width:100%;
+  overflow-wrap:anywhere;text-align:center;filter:drop-shadow(0 0 14px rgba(var(--glow),.4))}
+.note{position:relative;rotate:-.6deg;border-radius:22px;padding:32px 34px;color:#5a3446;
+  border:1px solid rgba(214,170,90,.55);
+  background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .55 0 0 0 0 .45 0 0 0 0 .35 0 0 0 .09 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),linear-gradient(160deg,#ffffff,#fff9f0);
+  box-shadow:0 2px 4px rgba(60,20,50,.25),0 24px 46px -10px rgba(15,4,35,.6),0 0 0 6px rgba(255,255,255,.08),0 0 54px rgba(var(--glow),.18)}
+.note::before{content:"";position:absolute;inset:8px;border:1px solid rgba(214,170,90,.7);border-radius:15px;pointer-events:none}
+.note::after{content:"";position:absolute;inset:0;pointer-events:none;background-repeat:no-repeat;
+  background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill='%23f3a6bd'><circle cx='12' cy='6' r='4.5'/><circle cx='12' cy='18' r='4.5'/><circle cx='6' cy='12' r='4.5'/><circle cx='18' cy='12' r='4.5'/></g><circle cx='12' cy='12' r='3.2' fill='%23e0b04f'/></svg>"),url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6z' fill='%23e0b04f'/></svg>"),url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6z' fill='%23e0b04f'/></svg>"),url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill='%23f3a6bd'><circle cx='12' cy='6' r='4.5'/><circle cx='12' cy='18' r='4.5'/><circle cx='6' cy='12' r='4.5'/><circle cx='18' cy='12' r='4.5'/></g><circle cx='12' cy='12' r='3.2' fill='%23e0b04f'/></svg>"),url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6z' fill='%23e0b04f'/></svg>"),url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6z' fill='%23e0b04f'/></svg>");
+  background-size:22px,20px,20px,22px,12px,12px;
+  background-position:11px 11px,calc(100% - 11px) 11px,11px calc(100% - 11px),calc(100% - 11px) calc(100% - 11px),calc(50% - 6px) 2px,calc(50% - 6px) calc(100% - 2px)}
+
+.polaroid{box-shadow:0 12px 28px rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,255,255,.55);padding-bottom:8px}
+.polaroid.f-champagne{background:linear-gradient(145deg,#fbeccb,#f1d49a 45%,#fff3d6 55%,#e9c77f);color:#7a5a1f}
+.polaroid.f-lavender{background:linear-gradient(145deg,#f3ecff,#d9c8f5 50%,#f8f3ff);color:#5b4a86}
+.polaroid.f-champagne::before{background:linear-gradient(90deg,#b98a3c,#f0d38a,#b98a3c)}
+.polaroid.f-lavender::before{background:linear-gradient(90deg,#9d86d1,#cdbbf0,#9d86d1)}
+.polaroid img,.polaroid .ph{box-shadow:inset 0 0 0 1px rgba(0,0,0,.1)}
+
+/* ================= mobile polish ================= */
+html{-webkit-text-size-adjust:100%;background:#120a24}
+body{background:none;overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  -webkit-user-select:none;user-select:none}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:var(--sky)}   /* iOS ignores fixed backgrounds, so paint it on a fixed layer */
+.note{-webkit-user-select:text;user-select:text}
+.lights{top:env(safe-area-inset-top,0px)}
+@supports (height:100dvh){.screen{min-height:100dvh}}
+@media (max-width:480px){
+  #final{padding-top:96px}
+  .note{padding:24px 22px;font-size:1.05rem}
+  .photos{gap:30px 16px}
+  .btn{font-size:1.8rem}
+  .sub{font-size:.95rem;padding:0 8px}
+}
+@media (max-height:520px) and (orientation:landscape){
+  #blow{padding-top:2vh}
+  .prompt{font-size:1.8rem}
+  .count{font-size:3rem}
+}
+
+/* ===== bigger, richer letter card ===== */
+.note{width:min(92vw,680px);max-width:680px;min-height:300px;padding:46px 46px 44px;text-align:center;
+  font-size:1.3rem;line-height:1.85;border-radius:26px;outline:1px solid rgba(214,170,90,.35);outline-offset:7px;
+  background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .55 0 0 0 0 .45 0 0 0 0 .35 0 0 0 .09 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),radial-gradient(ellipse at 50% 0,rgba(255,222,234,.6),transparent 62%),linear-gradient(160deg,#ffffff,#fff8ee);
+  box-shadow:0 3px 6px rgba(60,20,50,.25),0 34px 70px -12px rgba(15,4,35,.65),0 0 0 8px rgba(255,255,255,.07),0 0 70px rgba(var(--glow),.22)}
+.note::before{inset:11px;border-radius:17px;border-color:rgba(214,170,90,.8)}
+.note::after{background-size:32px,28px,28px,32px,16px,16px;
+  background-position:15px 15px,calc(100% - 15px) 15px,15px calc(100% - 15px),calc(100% - 15px) calc(100% - 15px),calc(50% - 8px) 3px,calc(50% - 8px) calc(100% - 3px)}
+.note p{margin:0 0 1em}
+.note p:first-child{font-family:var(--script);font-style:normal;font-size:2.4rem;line-height:1.3;color:var(--accent);
+  padding-bottom:.45em;margin-bottom:.9em;background:linear-gradient(90deg,transparent,rgba(214,170,90,.8),transparent) bottom/62% 1px no-repeat}
+@media (max-width:480px){.note{padding:38px 26px 36px;font-size:1.12rem;min-height:260px}.note p:first-child{font-size:2rem}}
+
+/* ===== glowing blow bar + smooth side with a realistic wax drip ===== */
+.meter{width:min(260px,72vw);height:14px;margin-top:1.2rem;border:1px solid rgba(255,210,122,.6);box-shadow:0 0 16px rgba(var(--glow),.45)}
+.meter i{box-shadow:0 0 12px rgba(255,210,122,.8)}
+.drip:not(.d2){left:68px;top:6px;width:32px;height:132px;border:0;border-radius:0;
+  background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 132'><defs><linearGradient id='g'><stop offset='0' stop-color='%23FFF4F8'/><stop offset='.3' stop-color='%23FCE4EC'/><stop offset='1' stop-color='%23F6C6D8'/></linearGradient></defs><path d='M9 0V92C9 95 3 100 3 110C3 121 9 128 16 128C23 128 29 121 29 110C29 100 23 95 23 92V0' fill='url(%23g)' stroke='%23000' stroke-width='4' stroke-linejoin='round'/><ellipse cx='10' cy='108' rx='2.6' ry='7' fill='%23fff' opacity='.85'/></svg>") no-repeat center/100% 100%}
+
+/* ===== candle burns from the very first moment ===== */
+.flame{animation:ignite .3s cubic-bezier(.2,1.6,.4,1) backwards,flicker 1.1s ease-in-out infinite}
+.glow{animation:glow 1.3s ease-in-out infinite alternate}
+.shadow{animation:shadowflick 1.1s ease-in-out infinite}
+
+/* ===== scene transitions ===== */
+.screen.active{animation:none}
+.screen:not(.shown)>*{opacity:0;translate:0 26px;filter:blur(8px)}
+.screen>*{transition:opacity .9s cubic-bezier(.2,.8,.2,1),translate .9s cubic-bezier(.2,.8,.2,1),filter .9s ease;
+  transition-delay:calc(var(--s,0) * .1s + .15s)}
+.screen>*:nth-child(1){--s:0}.screen>*:nth-child(2){--s:1}.screen>*:nth-child(3){--s:2}.screen>*:nth-child(4){--s:3}
+.screen>*:nth-child(5){--s:4}.screen>*:nth-child(6){--s:5}.screen>*:nth-child(7){--s:6}.screen>*:nth-child(8){--s:7}.screen>*:nth-child(9){--s:8}
+.screen>.meter{transition:opacity .4s 0s}
+.screen.leaving{display:flex;position:fixed;inset:0;z-index:3;overflow:hidden;pointer-events:none;
+  animation:leave .85s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes leave{to{opacity:0;transform:scale(1.06);filter:blur(12px)}}
+#veil{position:fixed;inset:0;z-index:9;pointer-events:none;opacity:0;
+  background:radial-gradient(circle at 50% 55%,rgba(255,226,190,.6),rgba(255,140,190,.26) 40%,transparent 70%)}
+#veil.go{animation:veil var(--vd,1.1s) ease-in-out}
+#veil.big{background:radial-gradient(circle at 50% 50%,rgba(255,244,214,.85),rgba(255,160,200,.4) 45%,transparent 75%)}
+@keyframes veil{0%{opacity:0;transform:scale(.7)}35%{opacity:1}100%{opacity:0;transform:scale(1.6)}}
+#bokeh{transition:filter 1.6s ease,transform 2.4s ease}
+body[data-scene="blow"] #bokeh{filter:brightness(.7) saturate(.9)}
+body[data-scene="final"] #bokeh{filter:brightness(1.25) saturate(1.25);transform:scale(1.05)}
+@media (prefers-reduced-motion:reduce){.screen>*{transition:none}.screen.leaving{animation:none;display:none}}
+
+/* ===== candle appears, rises, then the flame lights (countdown starts after) ===== */
+.candle{animation:rise .8s .3s cubic-bezier(.2,.9,.3,1.25) both}
+.flame{animation:ignite .5s 1s cubic-bezier(.2,1.6,.4,1) backwards,flicker 1.1s ease-in-out 1s infinite}
+@keyframes glowin{from{opacity:0}}
+@keyframes glowbreath{from{scale:.92}to{scale:1.06}}
+.glow{animation:glowin .8s 1s ease-out backwards,glowbreath 1.3s ease-in-out 1s infinite alternate}
+@keyframes shadowin{from{opacity:0}}
+.shadow{animation:shadowin .8s 1s backwards,shadowflick 1.1s ease-in-out 1s infinite}

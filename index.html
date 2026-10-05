@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>A little surprise for you !!</title>
+  <meta name="theme-color" content="#120a24">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta property="og:title" content="A little surprise for you !!">
+  <meta property="og:description" content="Tap to open. Turn your sound on and get ready to blow!">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Great+Vibes&family=Lora:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="sparkles" class="sparkles"></div>
+  <div id="balloons" class="balloons"></div>
+  <canvas id="fx"></canvas>
+  <div id="veil"></div>
+  <button id="mute" class="mute" type="button" aria-label="Toggle music">🔊</button>
+  <main>
+    <!-- Screen 1: start -->
+    <section id="start" class="screen active">
+      <h1 id="startTitle">I made something for you</h1>
+      <button id="startBtn" class="btn" type="button">Start</button>
+    </section>
+
+    <!-- Screen 2: countdown + candle -->
+    <section id="blow" class="screen">
+      <p id="prompt" class="prompt">Blow the candle in:</p>
+      <div id="count" class="count" aria-live="polite">3</div>
+      <div class="scene" id="scene">
+        <div class="candle">
+          <div class="shadow"></div>
+          <div class="glow" id="glow"></div>
+          <div class="smoke" id="smoke"><i></i><i></i><i></i></div>
+          <div class="flame" id="flame"><i class="outer"></i><i class="mid"></i><i class="inner"></i><i class="core"></i></div>
+          <div class="wick" id="wick"></div>
+          <div class="body">
+            <div class="drip"></div><div class="drip d2"></div>
+            <div class="pool"></div>
+          </div>
+        </div>
+      </div>
+      <div class="meter" id="meter"><i id="meterFill"></i></div>
+      <p id="hint" class="hint"></p>
+    </section>
+
+    <!-- Screen 3: wishes + photos -->
+    <section id="final" class="screen">
+      <div class="lights" id="lights"></div>
+      <h1 id="finalTitle"></h1>
+      <h2 id="finalName"></h2>
+      <div class="photos" id="photos"></div>
+      <p class="sub" id="subtitle"></p>
+      <div class="heart">♥︎</div>
+      <div class="note" id="note"></div>
+      <p class="sign" id="sign"></p>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
