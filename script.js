@@ -7,7 +7,7 @@ const CONFIG = {
   startTitle: "I  have  made  something  for  you",
   startButton: "Start",
   countdownText: "Blow the candle in:",
-  blowText: "blow the candle ..",
+  blowText: "blow the candle .. And make a wish ..",
   titleLine: "Happy Birthday",
   subtitle: "Today, every star is shining just for you ✨",
   note: [
@@ -92,7 +92,24 @@ function countdown() {
 }
 
 /* ---------- microphone blow detection ---------- */
-let blown = false, stream;
+let blown = false, stream, micNodes = [];
+
+/* The mic is opened only after the countdown and is fully released the moment the candle is out
+   (or if the tab is hidden / closed), so the browser's mic indicator turns off. */
+function releaseMic() {
+  micNodes.forEach((n) => { try { n.disconnect(); } catch (e) {} });
+  micNodes = [];
+  if (stream) { stream.getTracks().forEach((t) => t.stop()); stream = null; }
+}
+addEventListener("pagehide", releaseMic);
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden && stream && !blown) {
+    releaseMic();
+    $("meter").classList.remove("on");
+    $("hint").textContent = "Mic paused. Tap the candle to blow it out";
+    enableTap();
+  }
+});
 
 async function listenForBlow() {
   $("hint").textContent = "Allow the microphone, then blow on it 🌬️";
@@ -101,6 +118,7 @@ async function listenForBlow() {
       audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false }
     });
   } catch (err) { return fallback(); }
+  if (blown || document.hidden) { releaseMic(); return; }  // candle already out (or tab left) while the prompt was open
   await ac.resume();
   duckIntro();
   const analyser = ac.createAnalyser();
@@ -108,6 +126,7 @@ async function listenForBlow() {
   const src = ac.createMediaStreamSource(stream);
   const silent = ac.createGain(); silent.gain.value = 0;   // keeps Safari pulling audio, no feedback
   src.connect(analyser); analyser.connect(silent); silent.connect(ac.destination);
+  micNodes = [src, analyser, silent];
   $("meter").classList.add("on");                          // glowing bar: how hard you are blowing
   $("hint").textContent = "Blow gently on the microphone 🌬️";
   setTimeout(() => {                                       // nothing detected: offer a tap instead
@@ -193,7 +212,7 @@ function blowOut() {
   startMusic();
   $("flame").classList.add("out");                 // flame disappears immediately
   $("hint").textContent = "";
-  if (stream) stream.getTracks().forEach((t) => t.stop());
+  releaseMic();
   setTimeout(showFinal, CONFIG.finalDelayMs);
 }
 
@@ -428,31 +447,39 @@ function lights() {
 }
 
 /* ---------- typewriter note ---------- */
-function typeNote() {
+function typeNote() { // handwritten "wet ink": each letter appears in pink and dries to ink colour
   const box = $("note"); box.innerHTML = "";
-  const ps = CONFIG.note.map((t) => { const p = document.createElement("p"); box.appendChild(p); return [p, [...t]]; });
-  if (ps.length) ps[0][0].textContent = ps[0][1].join("");      
-  const rest = ps.slice(1);                                     
-  if (!CONFIG.typewriter) return rest.forEach(([p, c]) => (p.textContent = c.join("")));
+  const calm = !CONFIG.typewriter || matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const paras = CONFIG.note.map((text, pi) => {
+    const p = document.createElement("p"); box.appendChild(p);
+    const items = [];
+    text.split(" ").forEach((word, wi, arr) => {
+      const w = document.createElement("span"); w.className = "w"; p.appendChild(w);   // words never break mid-typing
+      [...word].forEach((ch) => {
+        const el = document.createElement("span");
+        el.className = pi === 0 || calm ? "c on" : "c";                                  // greeting shows at once
+        el.textContent = ch; w.appendChild(el); items.push({ el, ch });
+      });
+      if (wi < arr.length - 1) { p.appendChild(document.createTextNode(" ")); items.push({ el: null, ch: " " }); }
+    });
+    return { items };
+  });
+  if (calm) return;
   const pace = CONFIG.typingPace || 1;
-  // smooth, steady typing: even rhythm, a soft breath at commas, a longer one at the end of a sentence
+  // even rhythm, a soft breath at commas, a longer pause at the end of a sentence
   const delay = (ch, next) => {
     let d = rand(38, 62);
     if (",;:".includes(ch)) d += rand(130, 200);
     else if (".!?…".includes(ch) && (!next || next === " ")) d += rand(320, 480);
     return d * pace;
   };
-  let pi = 0, ci = 0;
+  let pi = 1, ii = 0;
   const step = () => {
-    if (pi >= rest.length) return;
-    const [p, c] = rest[pi];
-    if (ci === 0) { rest.forEach(([q]) => q.classList.remove("typing")); p.classList.add("typing"); }
-    p.textContent = c.slice(0, ++ci).join("");
-    if (ci >= c.length) {
-      pi++; ci = 0;
-      if (pi >= rest.length) return setTimeout(() => p.classList.remove("typing"), 2500);
-      setTimeout(step, rand(700, 1000) * pace);
-    } else setTimeout(step, delay(c[ci - 1], c[ci]));
+    if (pi >= paras.length) return;
+    const items = paras[pi].items, it = items[ii++];
+    if (it.el) it.el.classList.add("on");
+    if (ii >= items.length) { pi++; ii = 0; if (pi < paras.length) setTimeout(step, rand(700, 1000) * pace); return; }
+    setTimeout(step, it.el ? delay(it.ch, items[ii].ch) : rand(28, 48) * pace);
   };
   setTimeout(step, 1200);
 }
