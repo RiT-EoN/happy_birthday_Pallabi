@@ -2493,11 +2493,41 @@
   }
 
   .birthday-heading {
-    width: 100%;
+    position: relative;
+    z-index: 4;
+    width: fit-content;
+    max-width: 100%;
     min-width: 0;
     gap: clamp(2px, .5vw, 8px);
+    padding: 8px clamp(14px, 3vw, 24px) 10px;
+    border: 1px solid rgba(255, 235, 197, .45);
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(58, 15, 43, .76), rgba(92, 24, 57, .7));
+    box-shadow: 0 5px 18px rgba(31, 8, 28, .32), inset 0 1px rgba(255, 255, 255, .2);
+    backdrop-filter: blur(8px);
     overflow: visible;
     margin-top: 32px
+  }
+
+  .birthday-heading::before,
+  .birthday-heading::after {
+    position: absolute;
+    top: -8px;
+    z-index: 1;
+    font-family: var(--font);
+    font-size: clamp(12px, 3.5vw, 18px);
+    line-height: 1;
+    pointer-events: none
+  }
+
+  .birthday-heading::before {
+    content: "✨";
+    left: 10px
+  }
+
+  .birthday-heading::after {
+    content: "💖";
+    right: 10px
   }
 
   #finalTitle,
@@ -2755,7 +2785,8 @@
     }
 
     .birthday-heading {
-      gap: 2px
+      gap: 2px;
+      padding: 6px clamp(8px, 2.4vw, 16px) 8px
     }
 
     .sub {
@@ -2853,6 +2884,16 @@
     max-width: 100%;
     font-size: clamp(2.5rem, 12vw, 4.2rem);
     line-height: 1.1
+  }
+
+  @media (max-width:700px) {
+    .full-bg {
+      background: radial-gradient(ellipse at 50% 15%, #ffc0d1 0%, #ff789a 36%, #e83f6d 68%, #a91f49 100%)
+    }
+
+    .full-bg-scene .cube.skybox {
+      display: none
+    }
   }
 </style>
 </head>
