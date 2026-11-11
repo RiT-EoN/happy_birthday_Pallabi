@@ -13,10 +13,2925 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Great+Vibes&family=Lora:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Comic+Neue:wght@700&family=Great+Vibes&family=Lora:ital,wght@0,500;1,500&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+  <style>
+  :root {
+    --bg: #555675;
+    --wax: #FCE4EC;
+    --outline: #000;
+    --shadow: #3B3A55;
+    --flame-out: #FA8C00;
+    --flame-in: #FFD400;
+    --k: 1;
+    --font: "Comic Neue", "Comic Sans MS", "Chalkboard SE", "Marker Felt", cursive;
+  }
+
+  * {
+    box-sizing: border-box
+  }
+
+  html,
+  body {
+    margin: 0;
+    min-height: 100%;
+    background: var(--bg);
+    color: #fff;
+    font-family: var(--font);
+    font-weight: 700
+  }
+
+  .screen {
+    display: none;
+    min-height: 100svh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: calc(24px + env(safe-area-inset-top, 0px)) 20px calc(32px + env(safe-area-inset-bottom, 0px))
+  }
+
+  .screen.active {
+    display: flex;
+    animation: fade .5s ease
+  }
+
+  @keyframes fade {
+    from {
+      opacity: 0
+    }
+  }
+
+  h1 {
+    font-size: clamp(2rem, 8vw, 3rem);
+    margin: 0 0 1.2rem;
+    line-height: 1.15
+  }
+
+  .prompt {
+    font-size: clamp(1.8rem, 7.5vw, 2.6rem);
+    margin: 0;
+    letter-spacing: .02em
+  }
+
+  .hint {
+    min-height: 1.5em;
+    margin: 1.2rem 0 0;
+    font-size: 1rem;
+    opacity: .85
+  }
+
+  .btn {
+    font: inherit;
+    font-size: 1.5rem;
+    background: var(--flame-in);
+    color: #000;
+    border: 4px solid var(--outline);
+    border-radius: 16px;
+    padding: .5em 1.8em;
+    box-shadow: 6px 6px 0 var(--outline);
+    cursor: pointer;
+    transition: transform .1s, box-shadow .1s
+  }
+
+  .btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 2px 2px 0 var(--outline)
+  }
+
+  .btn:focus-visible {
+    outline: 4px solid #fff;
+    outline-offset: 4px
+  }
+
+  /* ---------- countdown ---------- */
+  #blow {
+    justify-content: flex-start;
+    padding-top: calc(9vh + env(safe-area-inset-top, 0px))
+  }
+
+  .count {
+    font-size: clamp(4.5rem, 22vw, 7rem);
+    line-height: 1;
+    min-height: 1.1em;
+    margin-top: .15em
+  }
+
+  .count.pop {
+    animation: pop .45s ease
+  }
+
+  @keyframes pop {
+    from {
+      transform: scale(1.5);
+      opacity: 0
+    }
+  }
+
+  /* ---------- candle (cel-shaded anime/cartoon) ---------- */
+  .scene {
+    transform: scale(var(--k));
+    transform-origin: top center;
+    padding-top: 250px;
+    margin-top: .2rem;
+    position: relative
+  }
+
+  .candle {
+    position: relative;
+    width: 120px;
+    height: 300px;
+    animation: rise .9s cubic-bezier(.2, .9, .3, 1.25) both
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(60px)
+    }
+  }
+
+  .body {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    border: 4px solid var(--outline);
+    border-radius: 0 0 12px 12px;
+    background: linear-gradient(90deg, #FFF4F8 0 16%, var(--wax) 16% 64%, #F6C6D8 64% 100%)
+  }
+
+  .body::after {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 44px;
+    bottom: 26px;
+    width: 6px;
+    border-radius: 6px;
+    background: #fff;
+    opacity: .9
+  }
+
+  .pool {
+    position: absolute;
+    z-index: 2;
+    left: -4px;
+    right: -4px;
+    top: -17px;
+    height: 34px;
+    border: 4px solid var(--outline);
+    border-radius: 50%;
+    background: radial-gradient(ellipse at 50% 55%, #F7AFC6 0 26%, #FFF4F8 28%)
+  }
+
+  .drip {
+    position: absolute;
+    left: calc(100% - 2px);
+    top: 110px;
+    width: 26px;
+    height: 54px;
+    background: var(--wax);
+    border: 4px solid var(--outline);
+    border-left: 0;
+    border-radius: 0 14px 24px 0
+  }
+
+  .drip.d2 {
+    left: 20px;
+    top: 8px;
+    width: 24px;
+    height: 80px;
+    border: 4px solid var(--outline);
+    border-top: 0;
+    border-radius: 0 0 14px 14px;
+    background: linear-gradient(90deg, #FFF4F8 0 30%, var(--wax) 30%)
+  }
+
+  .wick {
+    position: absolute;
+    z-index: 3;
+    left: calc(50% - 3px);
+    bottom: calc(100% - 2px);
+    width: 6px;
+    height: 30px;
+    background: linear-gradient(#2a2a2a, #000);
+    border-radius: 3px 3px 0 0;
+    transform: rotate(7deg);
+    transform-origin: bottom
+  }
+
+  .wick::after {
+    content: "";
+    position: absolute;
+    top: -3px;
+    left: -1px;
+    width: 8px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--flame-out);
+    opacity: 0
+  }
+
+  .wick.ember::after {
+    box-shadow: 0 0 10px 4px var(--flame-out);
+    animation: ember 1.6s ease-out forwards
+  }
+
+  @keyframes ember {
+    from {
+      opacity: 1
+    }
+
+    to {
+      opacity: 0
+    }
+  }
+
+  .candle::before {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    left: -16px;
+    right: -16px;
+    bottom: -9px;
+    height: 22px;
+    border-radius: 50%;
+    background: #0f0818
+  }
+
+  .shadow {
+    position: absolute;
+    z-index: 0;
+    left: 0;
+    bottom: -3px;
+    width: 120px;
+    height: 300px;
+    background: var(--shadow);
+    border-radius: 50% 50% 0 0/5% 5% 0 0;
+    transform-origin: 50% 100%;
+    transform: skewX(42deg) scaleY(.5);
+    -webkit-mask-image: linear-gradient(to top, #000 0, rgba(0, 0, 0, .55) 45%, rgba(0, 0, 0, .08) 100%);
+    mask-image: linear-gradient(to top, #000 0, rgba(0, 0, 0, .55) 45%, rgba(0, 0, 0, .08) 100%);
+    filter: blur(1.5px);
+    animation: shadowflick 1.1s ease-in-out .7s infinite
+  }
+
+  @keyframes shadowflick {
+    50% {
+      transform: skewX(44.5deg) scaleY(.53)
+    }
+  }
+
+  .shadow.out {
+    animation: none;
+    opacity: .25;
+    transition: opacity .6s
+  }
+
+  body {
+    overflow-x: clip
+  }
+
+  .glow {
+    position: absolute;
+    z-index: 0;
+    left: 50%;
+    bottom: calc(100% + 110px);
+    width: 380px;
+    height: 380px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 190, 80, .55) 0, rgba(255, 150, 40, .18) 40%, transparent 68%);
+    transform: translate(-50%, 50%);
+    animation: glow 1.3s ease-in-out .7s infinite alternate backwards
+  }
+
+  @keyframes glow {
+    from {
+      scale: .92;
+      opacity: .8
+    }
+
+    to {
+      scale: 1.06;
+      opacity: 1
+    }
+  }
+
+  .glow.out {
+    opacity: 0;
+    animation: none;
+    transition: opacity .3s
+  }
+
+  .flame {
+    position: absolute;
+    z-index: 1;
+    left: calc(50% - 62px);
+    bottom: calc(100% + 20px);
+    width: 125px;
+    height: 207px;
+    transform-origin: 50% 100%;
+    rotate: calc(var(--lean, 0) * 1deg);
+    transition: rotate .08s linear;
+    animation: ignite .8s .7s cubic-bezier(.2, 1.6, .4, 1) backwards, flicker 1.1s ease-in-out .7s infinite
+  }
+
+  @keyframes ignite {
+    from {
+      scale: 0;
+      opacity: 0
+    }
+  }
+
+  .flame i {
+    position: absolute;
+    left: 50%;
+    display: block;
+    border-radius: 0 50% 50% 50%;
+    transform: scale(1.4, 1.95) rotate(45deg)
+  }
+
+  .flame .outer {
+    width: 88px;
+    height: 88px;
+    margin-left: -44px;
+    bottom: 42px;
+    background: var(--flame-out)
+  }
+
+  .flame .mid {
+    width: 66px;
+    height: 66px;
+    margin-left: -33px;
+    bottom: 37px;
+    background: #FFB000
+  }
+
+  .flame .inner {
+    width: 44px;
+    height: 44px;
+    margin-left: -22px;
+    bottom: 32px;
+    background: var(--flame-in)
+  }
+
+  .flame .core {
+    width: 22px;
+    height: 22px;
+    margin-left: -11px;
+    bottom: 28px;
+    background: #FFF7CC
+  }
+
+  @keyframes flicker {
+
+    0%,
+    100% {
+      transform: scale(1, 1) rotate(-1deg)
+    }
+
+    25% {
+      transform: scale(.97, 1.05) rotate(1.5deg)
+    }
+
+    50% {
+      transform: scale(1.03, .96) rotate(-1.5deg)
+    }
+
+    75% {
+      transform: scale(.98, 1.03) rotate(1deg)
+    }
+  }
+
+  .flame.out {
+    animation: none;
+    opacity: 0;
+    scale: .2 .05;
+    transition: scale .15s ease-in, opacity .12s
+  }
+
+  .smoke {
+    position: absolute;
+    z-index: 1;
+    left: 50%;
+    bottom: calc(100% + 24px);
+    width: 0;
+    height: 0
+  }
+
+  .smoke i {
+    position: absolute;
+    left: -12px;
+    bottom: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .6);
+    filter: blur(4px);
+    opacity: 0
+  }
+
+  .smoke.go i {
+    animation: smoke 2s ease-out forwards
+  }
+
+  .smoke i:nth-child(1) {
+    --x: -26px
+  }
+
+  .smoke i:nth-child(2) {
+    --x: 20px;
+    animation-delay: .25s
+  }
+
+  .smoke i:nth-child(3) {
+    --x: -8px;
+    animation-delay: .5s
+  }
+
+  @keyframes smoke {
+    0% {
+      opacity: .8;
+      transform: translate(0, 0) scale(.5)
+    }
+
+    100% {
+      opacity: 0;
+      transform: translate(var(--x), -190px) scale(2.6)
+    }
+  }
+
+  #blow.shake {
+    animation: shake .4s
+  }
+
+  @keyframes shake {
+    20% {
+      transform: translateX(-6px)
+    }
+
+    40% {
+      transform: translateX(6px)
+    }
+
+    60% {
+      transform: translateX(-4px)
+    }
+
+    80% {
+      transform: translateX(4px)
+    }
+  }
+
+  /* ---------- final screen ---------- */
+  #final {
+    justify-content: flex-start;
+    gap: 24px
+  }
+
+  .note {
+    background: var(--wax);
+    color: #000;
+    border: 4px solid var(--outline);
+    border-radius: 18px;
+    box-shadow: 8px 8px 0 var(--shadow);
+    padding: 22px 24px;
+    max-width: 520px;
+    font-size: 1.2rem;
+    line-height: 1.5;
+    text-align: left
+  }
+
+  .note p {
+    margin: 0 0 .8em
+  }
+
+  .note p:last-child {
+    margin: 0
+  }
+
+  .photos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    max-width: 640px;
+    width: 100%;
+    padding-top: 8px;
+    justify-items: center
+  }
+
+  .polaroid {
+    margin: 0;
+    background: #fff;
+    color: #000;
+    border: 4px solid var(--outline);
+    padding: 10px 10px 8px;
+    width: 160px;
+    transform: rotate(var(--r, 0deg));
+    box-shadow: 5px 5px 0 var(--shadow)
+  }
+
+  .polaroid img,
+  .polaroid .ph {
+    width: 100%;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    display: block;
+    border: 3px solid var(--outline)
+  }
+
+  .polaroid .ph {
+    background: var(--bg);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .9rem;
+    padding: 8px
+  }
+
+  .polaroid figcaption {
+    margin-top: 8px;
+    font-size: .95rem
+  }
+
+  @media (prefers-reduced-motion:reduce) {
+    .flame {
+      animation: none
+    }
+
+    .screen.active,
+    .count.pop {
+      animation: none
+    }
+  }
+
+  /* ---------- ambient + final animations ---------- */
+  .screen {
+    position: relative;
+    z-index: 2
+  }
+
+  .sparkles,
+  .balloons {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1
+  }
+
+  .spark {
+    position: absolute;
+    bottom: -20px;
+    left: var(--x);
+    width: var(--s);
+    height: var(--s);
+    border-radius: 50%;
+    background: #FFE9A8;
+    opacity: 0;
+    animation: floatup var(--d) linear var(--dl) infinite
+  }
+
+  @keyframes floatup {
+    0% {
+      opacity: 0;
+      transform: translate(0, 0)
+    }
+
+    15% {
+      opacity: .8
+    }
+
+    100% {
+      opacity: 0;
+      transform: translate(var(--dx), -105vh)
+    }
+  }
+
+  #start .start-box {
+    animation: bob 3s ease-in-out infinite
+  }
+
+  #start .btn {
+    animation: pulse 1.6s ease-in-out infinite
+  }
+
+  .btn:active {
+    animation: none
+  }
+
+  @keyframes bob {
+    50% {
+      transform: translateY(-10px)
+    }
+  }
+
+  @keyframes pulse {
+    50% {
+      transform: scale(1.07)
+    }
+  }
+
+  .mute {
+    position: fixed;
+    top: calc(12px + env(safe-area-inset-top, 0px));
+    right: 12px;
+    z-index: 20;
+    display: none;
+    width: 48px;
+    height: 48px;
+    font-size: 1.3rem;
+    background: var(--flame-in);
+    border: 4px solid var(--outline);
+    border-radius: 50%;
+    box-shadow: 3px 3px 0 var(--outline);
+    cursor: pointer
+  }
+
+  .mute.show {
+    display: block
+  }
+
+  #fx {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10
+  }
+
+  #finalTitle span {
+    display: inline-block;
+    animation: letter .6s calc(var(--i) * .05s) cubic-bezier(.2, 1.6, .4, 1) both
+  }
+
+  @keyframes letter {
+    from {
+      opacity: 0;
+      transform: translateY(-40px) rotate(-12deg)
+    }
+  }
+
+  .note {
+    animation: popin .7s .3s cubic-bezier(.2, 1.5, .4, 1) both
+  }
+
+  @keyframes popin {
+    from {
+      opacity: 0;
+      scale: .6
+    }
+  }
+
+  .polaroid {
+    animation: fly .8s calc(.7s + var(--i, 0) * .25s) cubic-bezier(.2, 1.2, .4, 1) both;
+    transition: transform .2s
+  }
+
+  .polaroid:hover {
+    transform: rotate(0deg) scale(1.06)
+  }
+
+  @keyframes fly {
+    from {
+      opacity: 0;
+      transform: translateY(90px) rotate(calc(var(--r) * 4)) scale(.6)
+    }
+  }
+
+  .balloon {
+    position: absolute;
+    bottom: -100px;
+    left: var(--x);
+    width: 54px;
+    height: 66px;
+    background: var(--c);
+    border: 4px solid var(--outline);
+    border-radius: 50% 50% 50% 50%/46% 46% 54% 54%;
+    animation: balloon var(--d) ease-in-out var(--dl) infinite
+  }
+
+  .balloon::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    width: 2px;
+    height: 60px;
+    background: var(--outline)
+  }
+
+  @keyframes balloon {
+    0% {
+      transform: translate(0, 0) rotate(-4deg)
+    }
+
+    50% {
+      transform: translate(18px, -60vh) rotate(5deg)
+    }
+
+    100% {
+      transform: translate(-6px, -120vh) rotate(-4deg)
+    }
+  }
+
+  @media (prefers-reduced-motion:reduce) {
+
+    .balloon,
+    .spark,
+    .candle,
+    .glow,
+    #start .start-box,
+    #start .btn {
+      animation: none
+    }
+  }
+
+  /* ================= Romantic theme ================= */
+  :root {
+    --sky: linear-gradient(180deg, #120a24 0%, #2b1445 55%, #5a2350 100%);
+    --accent: #ff5c93;
+    --gold: #ffd27a;
+    --paper: #fff4ea;
+    --ink: #4a2336;
+    --glow: 255, 170, 110;
+    --shadow: #1b0f26;
+    --script: "Great Vibes", "Brush Script MT", cursive;
+    --serif: "Lora", Georgia, serif
+  }
+
+  html,
+  body {
+    background: none
+  }
+
+  body {
+    background: var(--sky);
+    background-attachment: fixed;
+    min-height: 100svh
+  }
+
+  h1 {
+    font-family: var(--script);
+    font-weight: 400
+  }
+
+  #start h1 {
+    font-size: clamp(1.15rem, 7.5vw, 3rem);
+    white-space: nowrap;
+    color: #ffe9c7;
+    text-shadow: 0 0 22px rgba(var(--glow), .6)
+  }
+
+  .prompt {
+    font-family: var(--script);
+    font-weight: 400;
+    font-size: clamp(2.6rem, 11vw, 3.8rem);
+    color: #ffe9c7;
+    text-shadow: 0 0 18px rgba(var(--glow), .7)
+  }
+
+  .count {
+    color: var(--gold);
+    text-shadow: 0 0 24px rgba(var(--glow), .8)
+  }
+
+  .hint {
+    color: #f3d9e4
+  }
+
+  .btn {
+    background: linear-gradient(135deg, #ff8db5, #ff4f87);
+    color: #fff;
+    border: 3px solid rgba(255, 255, 255, .35);
+    border-radius: 999px;
+    box-shadow: 0 8px 26px rgba(255, 79, 135, .5);
+    font-family: var(--script);
+    font-size: 2rem;
+    font-weight: 400;
+    padding: .15em 1.6em
+  }
+
+  .btn:active {
+    transform: scale(.96);
+    box-shadow: 0 4px 14px rgba(255, 79, 135, .5)
+  }
+
+  .btn.ghost {
+    background: transparent;
+    border: 2px solid var(--gold);
+    color: var(--gold);
+    box-shadow: none;
+    font-size: 1.5rem;
+    padding: .1em 1.2em;
+    margin-top: .8rem
+  }
+
+  .mute {
+    background: rgba(255, 255, 255, .15);
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 14px rgba(var(--glow), .5);
+    backdrop-filter: blur(6px)
+  }
+
+  .body {
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, .07), 0 0 46px rgba(var(--glow), .2)
+  }
+
+  .scene::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -40px;
+    width: 560px;
+    height: 150px;
+    transform: translateX(-50%);
+    z-index: 0;
+    background: radial-gradient(ellipse, rgba(var(--glow), .42), transparent 68%)
+  }
+
+  /* breath meter */
+  .meter {
+    width: min(240px, 70vw);
+    height: 12px;
+    margin-top: 1.1rem;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, .14);
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity .4s
+  }
+
+  .meter.on {
+    opacity: 1
+  }
+
+  .meter i {
+    display: block;
+    height: 100%;
+    width: 0;
+    border-radius: 99px;
+    background: linear-gradient(90deg, var(--gold), var(--accent));
+    transition: width .08s linear
+  }
+
+  /* night bokeh background */
+  #bokeh {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden
+  }
+
+  #bokeh i {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(2px);
+    opacity: var(--o);
+    background: radial-gradient(circle, rgba(var(--c), .9) 0, rgba(var(--c), .35) 55%, transparent 72%);
+    animation: bk 5s ease-in-out var(--dl) infinite alternate
+  }
+
+  @keyframes bk {
+    to {
+      opacity: calc(var(--o) * .35);
+      transform: scale(1.15)
+    }
+  }
+
+  #bokeh b {
+    position: absolute;
+    width: var(--z);
+    height: var(--z);
+    border-radius: 50%;
+    background: #fff;
+    animation: tw 3s ease-in-out var(--dl) infinite
+  }
+
+  @keyframes tw {
+    50% {
+      opacity: .15
+    }
+  }
+
+  #bokeh u {
+    position: absolute;
+    top: 6%;
+    right: 8%;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    text-decoration: none;
+    background: radial-gradient(circle at 35% 35%, #fffbe8, #f3e3b5 60%, #d9c58f);
+    box-shadow: 0 0 40px 12px rgba(255, 240, 200, .35), 0 0 120px 40px rgba(255, 220, 160, .16)
+  }
+
+  #bgphoto {
+    position: fixed;
+    inset: -20px;
+    z-index: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1.5s
+  }
+
+  body.final #bgphoto {
+    opacity: 1
+  }
+
+  /* final scene */
+  #final {
+    justify-content: flex-start;
+    padding-top: 120px;
+    gap: 10px
+  }
+
+  .lights {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 90px;
+    pointer-events: none;
+    z-index: 3
+  }
+
+  .lights svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%
+  }
+
+  .lights i {
+    position: absolute;
+    width: 10px;
+    height: 15px;
+    margin-left: -5px;
+    border-radius: 50% 50% 50% 50%/60% 60% 40% 40%;
+    background: var(--c);
+    box-shadow: 0 0 12px 4px var(--c);
+    animation: twinkle 2.4s ease-in-out var(--dl) infinite
+  }
+
+  @keyframes twinkle {
+    50% {
+      opacity: .35;
+      transform: scale(.85)
+    }
+  }
+
+  #finalTitle {
+    font-size: clamp(2.6rem, 11vw, 4.2rem);
+    margin: 0;
+    color: var(--gold);
+    text-shadow: 0 0 24px rgba(var(--glow), .7)
+  }
+
+  #finalName {
+    font-family: var(--script);
+    font-weight: 400;
+    font-size: clamp(3.4rem, 15vw, 6rem);
+    line-height: 1;
+    margin: 0;
+    color: transparent;
+    background: linear-gradient(100deg, #ffd27a, #fff6d8, #ff8fb1, #ffd27a);
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: shimmer 5s linear infinite
+  }
+
+  @keyframes shimmer {
+    to {
+      background-position: -250% 0
+    }
+  }
+
+  .sub {
+    font-family: var(--serif);
+    font-style: italic;
+    color: #f6dce8;
+    margin: .2rem 0 0
+  }
+
+  .heart {
+    font-size: 2rem;
+    color: var(--accent);
+    filter: drop-shadow(0 0 10px var(--accent));
+    animation: beat 1.2s ease-in-out infinite
+  }
+
+  @keyframes beat {
+
+    0%,
+    100% {
+      transform: scale(1)
+    }
+
+    15% {
+      transform: scale(1.3)
+    }
+
+    30% {
+      transform: scale(1)
+    }
+
+    45% {
+      transform: scale(1.2)
+    }
+  }
+
+  .note {
+    background: linear-gradient(160deg, var(--paper), #ffe9dc);
+    color: var(--ink);
+    border: 1px solid rgba(255, 210, 122, .8);
+    border-radius: 6px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, .45), 0 0 40px rgba(var(--glow), .25);
+    padding: 26px 28px;
+    max-width: 540px;
+    min-height: 120px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.15rem;
+    line-height: 1.7;
+    rotate: -1deg
+  }
+
+  .note p.typing::after {
+    content: "▌";
+    color: var(--accent);
+    animation: blink .7s steps(1) infinite
+  }
+
+  @keyframes blink {
+    50% {
+      opacity: 0
+    }
+  }
+
+  .photos {
+    gap: 28px 24px;
+    max-width: 680px;
+    padding: 30px 0 8px
+  }
+
+  .polaroid {
+    background: #fffdf8;
+    color: var(--ink);
+    border: 0;
+    border-radius: 3px;
+    padding: 10px 10px 4px;
+    width: min(170px, 42vw);
+    transform-origin: 50% -8px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, .45);
+    font-family: var(--script);
+    font-size: 1.4rem;
+    animation: fly .8s calc(.7s + var(--i, 0) * .25s) cubic-bezier(.2, 1.2, .4, 1) both
+  }
+
+  .polaroid::before {
+    content: "";
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    width: 14px;
+    height: 26px;
+    margin-left: -7px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #c89b6a, #e8c496, #c89b6a);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .4)
+  }
+
+  .polaroid img,
+  .polaroid .ph {
+    border: 0;
+    border-radius: 2px
+  }
+
+  .polaroid .ph {
+    background: #e9dfe6;
+    color: #6a4a5a;
+    font-family: var(--serif);
+    font-size: .8rem
+  }
+
+  @keyframes swing {
+    from {
+      rotate: -2.5deg
+    }
+
+    to {
+      rotate: 2.5deg
+    }
+  }
+
+  .sign {
+    font-family: var(--script);
+    font-size: 2.4rem;
+    color: var(--gold);
+    margin: .4rem 0 0;
+    text-shadow: 0 0 16px rgba(var(--glow), .5)
+  }
+
+  .balloon {
+    width: auto;
+    height: auto;
+    background: none;
+    border: 0;
+    border-radius: 0;
+    font-size: var(--fs, 26px);
+    filter: drop-shadow(0 0 8px rgba(255, 120, 170, .7))
+  }
+
+  .balloon::after {
+    display: none
+  }
+
+  /* ===== final scene polish: name, letter card, photo frames ===== */
+  #finalName {
+    font-size: clamp(3rem, 13vw, 5.2rem);
+    line-height: 1.3;
+    padding: .05em .2em .18em;
+    margin: -.15em 0 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    text-align: center;
+    filter: drop-shadow(0 0 14px rgba(var(--glow), .4))
+  }
+
+  .birthday-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: .18em;
+    max-width: 100%;
+    white-space: nowrap
+  }
+
+  #finalTitle {
+    font-size: clamp(1.35rem, 7.8vw, 4.2rem);
+    white-space: nowrap
+  }
+
+  #finalName {
+    font-size: clamp(1.8rem, 10vw, 5.2rem);
+    line-height: 1;
+    padding: 0;
+    margin: 0;
+    max-width: none;
+    white-space: nowrap
+  }
+
+  .note {
+    position: relative;
+    rotate: -.6deg;
+    border-radius: 22px;
+    padding: 32px 34px;
+    color: #5a3446;
+    border: 1px solid rgba(214, 170, 90, .55);
+    background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .55 0 0 0 0 .45 0 0 0 0 .35 0 0 0 .09 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"), linear-gradient(160deg, #ffffff, #fff9f0);
+    box-shadow: 0 2px 4px rgba(60, 20, 50, .25), 0 24px 46px -10px rgba(15, 4, 35, .6), 0 0 0 6px rgba(255, 255, 255, .08), 0 0 54px rgba(var(--glow), .18)
+  }
+
+  .note::before {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border: 1px solid rgba(214, 170, 90, .7);
+    border-radius: 15px;
+    pointer-events: none
+  }
+
+  .note::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-repeat: no-repeat;
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill='%23f3a6bd'><circle cx='12' cy='6' r='4.5'/><circle cx='12' cy='18' r='4.5'/><circle cx='6' cy='12' r='4.5'/><circle cx='18' cy='12' r='4.5'/></g><circle cx='12' cy='12' r='3.2' fill='%23e0b04f'/></svg>"), url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6z' fill='%23e0b04f'/></svg>"), url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6z' fill='%23e0b04f'/></svg>"), url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill='%23f3a6bd'><circle cx='12' cy='6' r='4.5'/><circle cx='12' cy='18' r='4.5'/><circle cx='6' cy='12' r='4.5'/><circle cx='18' cy='12' r='4.5'/></g><circle cx='12' cy='12' r='3.2' fill='%23e0b04f'/></svg>"), url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6z' fill='%23e0b04f'/></svg>"), url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6z' fill='%23e0b04f'/></svg>");
+    background-size: 22px, 20px, 20px, 22px, 12px, 12px;
+    background-position: 11px 11px, calc(100% - 11px) 11px, 11px calc(100% - 11px), calc(100% - 11px) calc(100% - 11px), calc(50% - 6px) 2px, calc(50% - 6px) calc(100% - 2px)
+  }
+
+  .polaroid {
+    box-shadow: 0 12px 28px rgba(0, 0, 0, .45), inset 0 0 0 1px rgba(255, 255, 255, .55);
+    padding-bottom: 8px
+  }
+
+  .polaroid.f-champagne {
+    background: linear-gradient(145deg, #fbeccb, #f1d49a 45%, #fff3d6 55%, #e9c77f);
+    color: #7a5a1f
+  }
+
+  .polaroid.f-lavender {
+    background: linear-gradient(145deg, #f3ecff, #d9c8f5 50%, #f8f3ff);
+    color: #5b4a86
+  }
+
+  .polaroid.f-champagne::before {
+    background: linear-gradient(90deg, #b98a3c, #f0d38a, #b98a3c)
+  }
+
+  .polaroid.f-lavender::before {
+    background: linear-gradient(90deg, #9d86d1, #cdbbf0, #9d86d1)
+  }
+
+  .polaroid img,
+  .polaroid .ph {
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .1)
+  }
+
+  /* ================= mobile polish ================= */
+  html {
+    -webkit-text-size-adjust: 100%;
+    background: #120a24;
+    scrollbar-color: #d6336c #120a24
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #120a24
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #d6336c;
+    border: 3px solid #120a24;
+    border-radius: 999px
+  }
+
+  body {
+    background: none;
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: var(--sky)
+  }
+
+  /* iOS ignores fixed backgrounds, so paint it on a fixed layer */
+  .note {
+    -webkit-user-select: text;
+    user-select: text
+  }
+
+  .lights {
+    top: env(safe-area-inset-top, 0px)
+  }
+
+  @supports (height:100dvh) {
+    .screen {
+      min-height: 100dvh
+    }
+  }
+
+  @media (max-width:480px) {
+    #final {
+      padding-top: 96px
+    }
+
+    .note {
+      padding: 24px 22px;
+      font-size: 1.05rem
+    }
+
+    .photos {
+      gap: 30px 16px
+    }
+
+    .btn {
+      font-size: 1.8rem
+    }
+
+    .sub {
+      font-size: .95rem;
+      padding: 0 8px
+    }
+  }
+
+  @media (max-height:520px) and (orientation:landscape) {
+    #blow {
+      padding-top: 2vh
+    }
+
+    .prompt {
+      font-size: 1.8rem
+    }
+
+    .count {
+      font-size: 3rem
+    }
+  }
+
+  /* ===== bigger, richer letter card ===== */
+  .note {
+    width: min(92vw, 680px);
+    max-width: 680px;
+    min-height: 300px;
+    padding: 46px 46px 44px;
+    text-align: center;
+    font-size: 1.3rem;
+    line-height: 1.85;
+    border-radius: 26px;
+    outline: 1px solid rgba(214, 170, 90, .35);
+    outline-offset: 7px;
+    background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .55 0 0 0 0 .45 0 0 0 0 .35 0 0 0 .09 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"), radial-gradient(ellipse at 50% 0, rgba(255, 222, 234, .6), transparent 62%), linear-gradient(160deg, #ffffff, #fff8ee);
+    box-shadow: 0 3px 6px rgba(60, 20, 50, .25), 0 34px 70px -12px rgba(15, 4, 35, .65), 0 0 0 8px rgba(255, 255, 255, .07), 0 0 70px rgba(var(--glow), .22)
+  }
+
+  .note::before {
+    inset: 11px;
+    border-radius: 17px;
+    border-color: rgba(214, 170, 90, .8)
+  }
+
+  .note::after {
+    background-size: 32px, 28px, 28px, 32px, 16px, 16px;
+    background-position: 15px 15px, calc(100% - 15px) 15px, 15px calc(100% - 15px), calc(100% - 15px) calc(100% - 15px), calc(50% - 8px) 3px, calc(50% - 8px) calc(100% - 3px)
+  }
+
+  .note p {
+    margin: 0 0 1em
+  }
+
+  .note p:first-child {
+    font-family: var(--script);
+    font-style: normal;
+    font-size: 2.4rem;
+    line-height: 1.3;
+    color: var(--accent);
+    padding-bottom: .45em;
+    margin-bottom: .9em;
+    background: linear-gradient(90deg, transparent, rgba(214, 170, 90, .8), transparent) bottom/62% 1px no-repeat
+  }
+
+  @media (max-width:480px) {
+    .note {
+      padding: 38px 26px 36px;
+      font-size: 1.12rem;
+      min-height: 260px
+    }
+
+    .note p:first-child {
+      font-size: 2rem
+    }
+  }
+
+  /* ===== glowing blow bar + smooth side with a realistic wax drip ===== */
+  .meter {
+    width: min(260px, 72vw);
+    height: 14px;
+    margin-top: 1.2rem;
+    border: 1px solid rgba(255, 210, 122, .6);
+    box-shadow: 0 0 16px rgba(var(--glow), .45)
+  }
+
+  .meter i {
+    box-shadow: 0 0 12px rgba(255, 210, 122, .8)
+  }
+
+  .drip:not(.d2) {
+    left: 68px;
+    top: 6px;
+    width: 32px;
+    height: 132px;
+    border: 0;
+    border-radius: 0;
+    background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 132'><defs><linearGradient id='g'><stop offset='0' stop-color='%23FFF4F8'/><stop offset='.3' stop-color='%23FCE4EC'/><stop offset='1' stop-color='%23F6C6D8'/></linearGradient></defs><path d='M9 0V92C9 95 3 100 3 110C3 121 9 128 16 128C23 128 29 121 29 110C29 100 23 95 23 92V0' fill='url(%23g)' stroke='%23000' stroke-width='4' stroke-linejoin='round'/><ellipse cx='10' cy='108' rx='2.6' ry='7' fill='%23fff' opacity='.85'/></svg>") no-repeat center/100% 100%
+  }
+
+  /* ===== candle burns from the very first moment ===== */
+  .flame {
+    animation: ignite .3s cubic-bezier(.2, 1.6, .4, 1) backwards, flicker 1.1s ease-in-out infinite
+  }
+
+  .glow {
+    animation: glow 1.3s ease-in-out infinite alternate
+  }
+
+  .shadow {
+    animation: shadowflick 1.1s ease-in-out infinite
+  }
+
+  /* ===== scene transitions ===== */
+  .screen.active {
+    animation: none
+  }
+
+  .screen:not(.shown)>* {
+    opacity: 0;
+    translate: 0 26px;
+    filter: blur(8px)
+  }
+
+  .screen>* {
+    transition: opacity .9s cubic-bezier(.2, .8, .2, 1), translate .9s cubic-bezier(.2, .8, .2, 1), filter .9s ease;
+    transition-delay: calc(var(--s, 0) * .1s + .15s)
+  }
+
+  .screen>*:nth-child(1) {
+    --s: 0
+  }
+
+  .screen>*:nth-child(2) {
+    --s: 1
+  }
+
+  .screen>*:nth-child(3) {
+    --s: 2
+  }
+
+  .screen>*:nth-child(4) {
+    --s: 3
+  }
+
+  .screen>*:nth-child(5) {
+    --s: 4
+  }
+
+  .screen>*:nth-child(6) {
+    --s: 5
+  }
+
+  .screen>*:nth-child(7) {
+    --s: 6
+  }
+
+  .screen>*:nth-child(8) {
+    --s: 7
+  }
+
+  .screen>*:nth-child(9) {
+    --s: 8
+  }
+
+  .screen>.meter {
+    transition: opacity .4s 0s
+  }
+
+  .screen.leaving {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 3;
+    overflow: hidden;
+    pointer-events: none;
+    animation: leave .85s cubic-bezier(.4, 0, .2, 1) forwards
+  }
+
+  @keyframes leave {
+    to {
+      opacity: 0;
+      transform: scale(1.06);
+      filter: blur(12px)
+    }
+  }
+
+  #veil {
+    position: fixed;
+    inset: 0;
+    z-index: 9;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(circle at 50% 55%, rgba(255, 226, 190, .6), rgba(255, 140, 190, .26) 40%, transparent 70%)
+  }
+
+  #veil.go {
+    animation: veil var(--vd, 1.1s) ease-in-out
+  }
+
+  #veil.big {
+    background: radial-gradient(circle at 50% 50%, rgba(255, 244, 214, .85), rgba(255, 160, 200, .4) 45%, transparent 75%)
+  }
+
+  @keyframes veil {
+    0% {
+      opacity: 0;
+      transform: scale(.7)
+    }
+
+    35% {
+      opacity: 1
+    }
+
+    100% {
+      opacity: 0;
+      transform: scale(1.6)
+    }
+  }
+
+  #bokeh {
+    transition: filter 1.6s ease, transform 2.4s ease
+  }
+
+  body[data-scene="blow"] #bokeh {
+    filter: brightness(.7) saturate(.9)
+  }
+
+  body[data-scene="final"] #bokeh {
+    filter: brightness(1.25) saturate(1.25);
+    transform: scale(1.05)
+  }
+
+  @media (prefers-reduced-motion:reduce) {
+    .screen>* {
+      transition: none
+    }
+
+    .screen.leaving {
+      animation: none;
+      display: none
+    }
+  }
+
+  /* ===== candle appears, rises, then the flame lights (countdown starts after) ===== */
+  .candle {
+    animation: rise .8s .3s cubic-bezier(.2, .9, .3, 1.25) both
+  }
+
+  .flame {
+    animation: ignite .5s 1s cubic-bezier(.2, 1.6, .4, 1) backwards, flicker 1.1s ease-in-out 1s infinite
+  }
+
+  @keyframes glowin {
+    from {
+      opacity: 0
+    }
+  }
+
+  @keyframes glowbreath {
+    from {
+      scale: .92
+    }
+
+    to {
+      scale: 1.06
+    }
+  }
+
+  .glow {
+    animation: glowin .8s 1s ease-out backwards, glowbreath 1.3s ease-in-out 1s infinite alternate
+  }
+
+  @keyframes shadowin {
+    from {
+      opacity: 0
+    }
+  }
+
+  .shadow {
+    animation: shadowin .8s 1s backwards, shadowflick 1.1s ease-in-out 1s infinite
+  }
+
+  /* ===== handwritten letter: Caveat body + "wet ink" letters ===== */
+  .note p {
+    font-family: "Caveat", "Bradley Hand", "Segoe Print", cursive;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 1.75rem;
+    line-height: 1.5;
+    color: var(--ink)
+  }
+
+  .note .w {
+    white-space: nowrap
+  }
+
+  .note .c {
+    opacity: 0;
+    color: var(--accent);
+    text-shadow: 0 0 10px rgba(255, 92, 147, .55);
+    transition: opacity .25s ease, color 1.1s ease, text-shadow 1.1s ease
+  }
+
+  .note .c.on {
+    opacity: 1;
+    color: var(--ink);
+    text-shadow: none
+  }
+
+  .note p.typing::after {
+    content: none
+  }
+
+  @media (max-width:480px) {
+    .note p {
+      font-size: 1.5rem
+    }
+  }
+
+  .note p:first-child .c,
+  .note p:first-child .c.on {
+    color: var(--accent);
+    text-shadow: none
+  }
+
+  /* ===== full-page background (from butterfly_1.html) ===== */
+  .svg-defs {
+    position: absolute;
+    height: 0;
+    width: 0
+  }
+
+  @keyframes rotatingY {
+    100% {
+      transform: rotateY(-360deg)
+    }
+  }
+
+  .full-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background: radial-gradient(ellipse at 50% 30%, #ff7fa3 0%, #d6336c 45%, #6e1030 75%, #22060f 100%)
+  }
+
+  .full-bg-scene {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    perspective: 1000px;
+    transform-style: preserve-3d
+  }
+
+  .full-bg-scene .cube.skybox {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 512px;
+    height: 512px;
+    margin-left: -256px;
+    margin-top: -256px;
+    transform-style: preserve-3d;
+    animation: rotatingY 40s linear infinite
+  }
+
+  .full-bg-scene .cube.skybox var.scale {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 512px;
+    height: 512px;
+    margin-left: -256px;
+    margin-top: -256px;
+    transform-style: preserve-3d;
+    transform: rotate3d(0, 0, 1, 15deg) translate3d(0, 100px, 0) scale3d(10, 14, 10)
+  }
+
+  .full-bg-scene .cube.skybox .face {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 512px;
+    height: 512px;
+    margin-left: -256px;
+    margin-top: -256px;
+    backface-visibility: hidden
+  }
+
+  .full-bg-scene .cube.skybox .face.front {
+    transform: rotateY(0deg) translateZ(-256px);
+    background: linear-gradient(180deg, #ff9ec4, #ffd3e0)
+  }
+
+  .full-bg-scene .cube.skybox .face.back {
+    transform: rotateY(180deg) translateZ(-256px);
+    background: linear-gradient(180deg, #c0395f, #f0a8c0)
+  }
+
+  .full-bg-scene .cube.skybox .face.right {
+    transform: rotateY(-90deg) translateZ(-256px);
+    background: linear-gradient(180deg, #e0608f, #ffd3e0)
+  }
+
+  .full-bg-scene .cube.skybox .face.left {
+    transform: rotateY(90deg) translateZ(-256px);
+    background: linear-gradient(180deg, #e0608f, #ffd3e0)
+  }
+
+  .full-bg-scene .cube.skybox .face.top {
+    transform: rotateX(-90deg) translateZ(-256px);
+    background: radial-gradient(circle, #fff0e0, #ffbcd4)
+  }
+
+  .full-bg-scene .cube.skybox .face.bottom {
+    transform: rotateX(90deg) translateZ(-256px);
+    background: linear-gradient(180deg, #5c0e26, #1a0510)
+  }
+
+  #full-bg-butterflies {
+    position: absolute;
+    inset: 0
+  }
+
+  /* Crossfade the shared sky/skybox out while the candle screen is active,
+     and the plain black + fireflies scene in — then back again once the
+     scene changes (to "final"), so it matches the start/final screens again. */
+  .full-bg,
+  .full-bg-scene {
+    transition: opacity .8s ease
+  }
+
+  body[data-scene="blow"] .full-bg,
+  body[data-scene="blow"] .full-bg-scene {
+    opacity: 0
+  }
+
+  .blow-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .8s ease
+  }
+
+  body[data-scene="blow"] .blow-bg {
+    opacity: 1
+  }
+
+  #fireflies {
+    position: absolute;
+    inset: 0;
+    overflow: hidden
+  }
+
+  .firefly {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    left: var(--x, 50%);
+    top: var(--y, 50%);
+    border-radius: 50%;
+    background: #e8ffb0;
+    box-shadow: 0 0 6px 2px rgba(232, 255, 176, .9), 0 0 16px 6px rgba(232, 255, 176, .35);
+    animation: firefly-drift var(--fd, 14s) ease-in-out infinite, firefly-glow var(--fg, 2.6s) ease-in-out infinite;
+    animation-delay: var(--dl, 0s), var(--dl2, 0s)
+  }
+
+  @keyframes firefly-drift {
+
+    0%,
+    100% {
+      transform: translate(0, 0)
+    }
+
+    25% {
+      transform: translate(var(--dx1, 40px), var(--dy1, -30px))
+    }
+
+    50% {
+      transform: translate(var(--dx2, -25px), var(--dy2, -60px))
+    }
+
+    75% {
+      transform: translate(var(--dx3, 30px), var(--dy3, -18px))
+    }
+  }
+
+  @keyframes firefly-glow {
+
+    0%,
+    100% {
+      opacity: .1
+    }
+
+    50% {
+      opacity: 1
+    }
+  }
+
+  /* ===== start-screen butterflies ===== */
+
+  .stage {
+    position: relative;
+    width: min(90vw, 460px);
+    height: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center
+  }
+
+  .start-box {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.4rem;
+    padding: 34px 28px;
+    text-align: center;
+    background: rgba(40, 16, 36, .45);
+    border: 1px solid rgba(255, 255, 255, .28);
+    border-radius: 22px;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 14px 48px rgba(0, 0, 0, .35)
+  }
+
+  .start-box h1 {
+    margin: 0
+  }
+
+  /* Simple, single-level 3D (one perspective per butterfly) instead of a deep
+     nested transform chain — more reliable across browsers inside a flex layout. */
+  .scene3d-mini {
+    position: absolute;
+    inset: -30px;
+    z-index: 2;
+    pointer-events: none
+  }
+
+  @keyframes bfly-fly {
+
+    0%,
+    100% {
+      transform: translate3d(var(--x0, 0px), var(--y0, 0px), 0) rotate(0deg)
+    }
+
+    25% {
+      transform: translate3d(var(--x1, 30px), var(--y1, -25px), 0) rotate(8deg)
+    }
+
+    50% {
+      transform: translate3d(var(--x2, -10px), var(--y2, -50px), 0) rotate(-7deg)
+    }
+
+    75% {
+      transform: translate3d(var(--x3, -35px), var(--y3, -15px), 0) rotate(9deg)
+    }
+  }
+
+  @keyframes bfly-flap {
+
+    0%,
+    100% {
+      transform: rotateY(0deg) scaleY(1)
+    }
+
+    50% {
+      transform: rotateY(var(--fold-angle)) scaleY(.88)
+    }
+  }
+
+  .butterfly {
+    position: absolute;
+    width: var(--sz, 32px);
+    height: var(--sz, 32px);
+    perspective: 140px;
+    animation: bfly-fly var(--fd, 7s) ease-in-out infinite;
+    will-change: transform, translate, rotate;
+    animation-delay: var(--dl, 0s);
+    translate: var(--interaction-x, 0px) var(--interaction-y, 0px);
+    rotate: var(--interaction-tilt, 0deg)
+  }
+
+  .butterfly .wing,
+  .candle-butterfly .wing {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    animation: bfly-flap var(--fl, .42s) cubic-bezier(.45, 0, .55, 1) infinite
+  }
+
+  .butterfly .wing.left,
+  .candle-butterfly .wing.left {
+    left: 0;
+    transform-origin: 100% 50%;
+    --fold-angle: -68deg
+  }
+
+  .butterfly .wing.right,
+  .candle-butterfly .wing.right {
+    left: 50%;
+    transform-origin: 0 50%;
+    --fold-angle: 68deg
+  }
+
+  .butterfly .wing svg,
+  .candle-butterfly .wing svg {
+    display: block;
+    width: 100%;
+    height: 100%
+  }
+
+  .butterfly .wing.right svg,
+  .candle-butterfly .wing.right svg {
+    transform: scaleX(-1)
+  }
+
+  .butterfly .wing use,
+  .candle-butterfly .wing use {
+    stroke: #fff;
+    stroke-width: .6;
+    filter: drop-shadow(0 0 5px currentColor) saturate(1.4) brightness(1.05)
+  }
+
+  .wing.variant-0 use {
+    fill: url(#wing-grad-0);
+    color: #ff2d78
+  }
+
+  .wing.variant-1 use {
+    fill: url(#wing-grad-1);
+    color: #00b4ff
+  }
+
+  .wing.variant-2 use {
+    fill: url(#wing-grad-2);
+    color: #c026ff
+  }
+
+  .wing.variant-3 use {
+    fill: url(#wing-grad-3);
+    color: #17d96b
+  }
+
+  .wing.variant-4 use {
+    fill: url(#wing-grad-4);
+    color: #ffb400
+  }
+
+  .wing.variant-5 use {
+    fill: url(#wing-grad-5);
+    color: #ff4b2b
+  }
+
+  .wing.variant-6 use {
+    fill: url(#wing-grad-6);
+    color: #00e0c6
+  }
+
+  /* ===== 7 enhancements ===== */
+
+  /* 1. Butterfly-to-candle: lands beside the flame, flies up when it's blown out */
+  .candle-butterfly {
+    position: absolute;
+    left: calc(100% - 6px);
+    bottom: 128px;
+    width: 34px;
+    height: 34px;
+    perspective: 140px;
+    opacity: 0;
+    transform: translate(60px, -40px) scale(.6);
+    transition: opacity 1.2s ease, transform 1.8s cubic-bezier(.2, .8, .2, 1)
+  }
+
+  .candle-butterfly.landed {
+    opacity: 1;
+    transform: translate(0, 0) scale(1)
+  }
+
+  .candle-butterfly.away {
+    opacity: 0;
+    transition: opacity 1.4s ease .3s, transform 1.6s ease-in;
+    transform: translate(-40px, -260px) scale(.4) rotate(-12deg)
+  }
+
+  .candle-butterfly .wing {
+    --fl: .5s
+  }
+
+  .candle-butterfly.landed .wing {
+    --fl: .32s
+  }
+
+  /* 4/5. section label above the constellation */
+  .section-label {
+    font-family: var(--script);
+    font-weight: 400;
+    font-size: 1.6rem;
+    color: var(--gold);
+    margin: .6rem 0 0;
+    text-shadow: 0 0 14px rgba(var(--glow), .5)
+  }
+
+  /* 5. Personal constellation */
+  .constellation {
+    position: relative;
+    width: min(92vw, 560px);
+    height: 220px;
+    margin: 4px auto 0
+  }
+
+  .star-point {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    margin: -12px;
+    border: none;
+    padding: 0;
+    background: none;
+    cursor: pointer
+  }
+
+  .star-point::before {
+    content: "💛";
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: 17px;
+    line-height: 1;
+    filter: drop-shadow(0 0 3px rgba(255, 242, 160, .8));
+    transform-origin: center;
+    animation: heart-star-sparkle 1.7s ease-in-out infinite;
+    animation-delay: var(--dl, 0s)
+  }
+
+  .star-point::after {
+    content: "✦";
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    color: #fff9dd;
+    font-size: 9px;
+    line-height: 1;
+    text-shadow: 0 0 5px #fff3a0;
+    animation: star-glint 1.2s ease-in-out infinite;
+    animation-delay: var(--dl, 0s)
+  }
+
+  .star-point:hover::before,
+  .star-point:focus-visible::before {
+    filter: drop-shadow(0 0 7px rgba(255, 240, 130, 1))
+  }
+
+  @keyframes heart-star-sparkle {
+
+    0%,
+    100% {
+      opacity: .82;
+      transform: scale(.88) rotate(-5deg);
+      filter: drop-shadow(0 0 2px rgba(255, 242, 160, .65))
+    }
+
+    50% {
+      opacity: 1;
+      transform: scale(1.16) rotate(5deg);
+      filter: drop-shadow(0 0 8px rgba(255, 242, 120, 1))
+    }
+  }
+
+  @keyframes star-glint {
+
+    0%,
+    100% {
+      opacity: .2;
+      transform: scale(.55) rotate(0deg)
+    }
+
+    50% {
+      opacity: 1;
+      transform: scale(1.2) rotate(45deg)
+    }
+  }
+
+  .love-scene {
+    position: relative;
+    width: 100%;
+    height: clamp(150px, 22vh, 210px);
+    overflow: visible
+  }
+
+  #love-heart {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none
+  }
+
+  .love-scene .constellation {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0
+  }
+
+  .star-popup {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    bottom: auto;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    width: max-content;
+    max-width: min(86vw, 360px);
+    padding: 14px 18px;
+    text-align: center;
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink);
+    background: linear-gradient(160deg, var(--paper), #ffe9dc);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 210, 122, .8);
+    box-shadow: 0 14px 40px rgba(0, 0, 0, .4);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .3s, transform .3s
+  }
+
+  .star-popup.show {
+    opacity: 1;
+    transform: translate(-50%, calc(-50% - 6px))
+  }
+
+  /* 6. Secret letter envelope — redesigned: blush paper, crimson ribbon + wax seal */
+  .envelope {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+    cursor: pointer;
+    filter: drop-shadow(0 14px 22px rgba(49, 8, 28, .26));
+    transition: transform .35s ease, filter .35s ease
+  }
+
+  .envelope:not(.open):hover {
+    transform: translateY(-4px);
+    filter: drop-shadow(0 18px 26px rgba(49, 8, 28, .34))
+  }
+
+  .env-body {
+    position: relative;
+    width: 230px;
+    height: 150px;
+    isolation: isolate
+  }
+
+  .env-back {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border: 1px solid rgba(198, 151, 87, .8);
+    border-radius: 12px;
+    background: repeating-linear-gradient(135deg, rgba(255, 255, 255, .13) 0 1px, transparent 1px 7px),
+      linear-gradient(145deg, #fffaf2 0%, #f9dce2 52%, #eeb4c5 100%);
+    box-shadow: inset 0 0 0 4px rgba(255, 255, 255, .38), inset 0 0 0 5px rgba(198, 151, 87, .2)
+  }
+
+  .env-back::before {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border: 1px solid rgba(255, 255, 255, .55);
+    border-radius: 7px
+  }
+
+  .env-ribbon {
+    position: absolute;
+    left: 0;
+    top: 58%;
+    width: 100%;
+    height: 16px;
+    z-index: 1;
+    background: linear-gradient(180deg, #f6c8d2, #c74368 42%, #9f2347 58%, #df7890);
+    box-shadow: 0 2px 5px rgba(92, 17, 43, .22), inset 0 1px rgba(255, 255, 255, .45)
+  }
+
+  .env-body::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    clip-path: polygon(0 31%, 50% 76%, 100% 31%, 100% 100%, 0 100%);
+    background: linear-gradient(145deg, rgba(255, 250, 242, .98), rgba(246, 219, 222, .98) 54%, rgba(226, 168, 184, .98));
+    box-shadow: inset 0 0 0 1px rgba(198, 151, 87, .55)
+  }
+
+  .env-letter {
+    position: absolute;
+    left: 12%;
+    right: 12%;
+    top: 5%;
+    height: 76%;
+    border: 1px solid rgba(198, 151, 87, .42);
+    border-radius: 5px 5px 2px 2px;
+    background: linear-gradient(160deg, #fffefa, #fff5e8);
+    box-shadow: 0 2px 8px rgba(78, 29, 44, .18);
+    transition: transform .65s cubic-bezier(.2, .9, .3, 1.1);
+    transform: translateY(0);
+    z-index: 1
+  }
+
+  .env-letter::before {
+    content: "";
+    position: absolute;
+    inset: 7px;
+    border: 1px solid rgba(198, 151, 87, .28);
+    border-radius: 2px
+  }
+
+  .env-flap {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 68%;
+    clip-path: polygon(0 0, 100% 0, 50% 78%);
+    background: linear-gradient(145deg, #fff0e8 0%, #f4bdcc 54%, #da829d 100%);
+    border-radius: 12px 12px 0 0;
+    transform-origin: 50% 0%;
+    transition: transform .65s cubic-bezier(.3, .2, .2, 1);
+    z-index: 3;
+    filter: drop-shadow(0 2px 2px rgba(100, 30, 51, .18))
+  }
+
+  .env-seal {
+    position: absolute;
+    left: 50%;
+    top: 42%;
+    width: 54px;
+    height: 54px;
+    margin-left: -27px;
+    border-radius: 50%;
+    z-index: 4;
+    border: 1px solid rgba(255, 220, 171, .9);
+    background: radial-gradient(circle at 34% 26%, #ffb1a2 0%, #d94764 35%, #9d183f 76%, #6e102e 100%);
+    box-shadow: 0 5px 9px rgba(70, 13, 35, .38), inset 0 0 0 3px rgba(255, 223, 174, .42),
+      inset 0 0 0 5px rgba(120, 12, 43, .28), inset 0 -5px 9px rgba(72, 7, 28, .34);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff8e9;
+    font-family: var(--script);
+    font-size: 1.55rem;
+    text-shadow: 0 1px 2px rgba(70, 8, 31, .6), 0 0 8px rgba(255, 255, 255, .48);
+    transition: opacity .35s ease, transform .35s ease;
+    animation: seal-pulse 2.6s ease-in-out infinite
+  }
+
+  .env-seal::before {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border: 1px solid rgba(255, 226, 190, .58);
+    border-radius: 50%
+  }
+
+  @keyframes seal-pulse {
+
+    0%,
+    100% {
+      transform: scale(1)
+    }
+
+    50% {
+      transform: scale(1.06)
+    }
+  }
+
+  .env-hint {
+    font-family: var(--serif);
+    font-style: italic;
+    color: #fff1df;
+    margin: 0;
+    letter-spacing: .04em;
+    text-shadow: 0 1px 8px rgba(74, 20, 45, .4)
+  }
+
+  .env-hint::before,
+  .env-hint::after {
+    content: "✦";
+    display: inline-block;
+    margin: 0 .7em;
+    color: #ffdf9a;
+    font-size: .72em;
+    vertical-align: .12em
+  }
+
+  .envelope.open .env-flap {
+    transform: rotateX(-165deg)
+  }
+
+  .envelope.open .env-seal {
+    opacity: 0;
+    transform: scale(.4) translateY(-10px);
+    animation: none
+  }
+
+  .envelope.open .env-letter {
+    transform: translateY(-58%)
+  }
+
+  .envelope.open {
+    cursor: default
+  }
+
+  /* 7+. Creative extra: hearts drifting upward on the final screen */
+  .heart-rain {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 1s ease
+  }
+
+  body[data-scene="final"] .heart-rain {
+    opacity: 1
+  }
+
+  .rising-heart {
+    position: absolute;
+    left: var(--x, 50%);
+    bottom: -40px;
+    font-size: var(--sz, 1.4rem);
+    color: var(--c, #ff6f91);
+    opacity: 0;
+    filter: drop-shadow(0 0 6px rgba(255, 120, 160, .6));
+    animation: heart-rise var(--rd, 12s) linear var(--rdl, 0s) infinite
+  }
+
+  @keyframes heart-rise {
+    0% {
+      opacity: 0;
+      transform: translateY(0) translateX(0) rotate(0deg)
+    }
+
+    10% {
+      opacity: .9
+    }
+
+    90% {
+      opacity: .7
+    }
+
+    100% {
+      opacity: 0;
+      transform: translateY(-115vh) translateX(var(--dx, 20px)) rotate(18deg)
+    }
+  }
+
+  /* 5. Memory gallery lightbox */
+  .photos figure {
+    cursor: pointer
+  }
+
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 5, 20, .88);
+    backdrop-filter: blur(4px);
+    padding: env(safe-area-inset-top, 0) 16px env(safe-area-inset-bottom, 0)
+  }
+
+  .lightbox[hidden] {
+    display: none
+  }
+
+  .lb-figure {
+    margin: 0;
+    max-width: min(92vw, 520px);
+    text-align: center
+  }
+
+  .lb-img {
+    max-width: 100%;
+    max-height: 70vh;
+    border-radius: 8px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .6)
+  }
+
+  .lb-caption {
+    color: #fdeef3;
+    font-family: var(--serif);
+    font-style: italic;
+    margin-top: 12px
+  }
+
+  .lb-close {
+    position: absolute;
+    top: calc(14px + env(safe-area-inset-top, 0px));
+    right: 16px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .15);
+    border: 2px solid var(--gold);
+    color: #fff;
+    font-size: 1.1rem;
+    cursor: pointer
+  }
+
+  .lb-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .15);
+    border: 2px solid var(--gold);
+    color: #fff;
+    font-size: 1.8rem;
+    line-height: 1;
+    cursor: pointer
+  }
+
+  .lb-prev {
+    left: 10px
+  }
+
+  .lb-next {
+    right: 10px
+  }
+
+  /* 7. Final surprise */
+  .finale {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+    margin-top: 1rem
+  }
+
+  .finale .btn {
+    font-size: 1.1rem;
+    padding: .5em 1.1em
+  }
+
+  #final {
+    width: 100%;
+    min-height: 100svh;
+    padding: clamp(34px, 6vh, 72px) 20px 64px;
+    gap: clamp(26px, 4vw, 44px)
+  }
+
+  .birthday-header {
+    width: min(100%, 850px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px
+  }
+
+  .birthday-heading {
+    width: 100%;
+    min-width: 0;
+    gap: clamp(2px, .5vw, 8px);
+    overflow: visible;
+    margin-top: 32px
+  }
+
+  #finalTitle,
+  #finalName {
+    flex: 0 0 auto;
+    width: max-content;
+    max-width: none;
+    overflow: visible
+  }
+
+  #finalTitle {
+    font-size: clamp(1rem, 5.4vw, 3.3rem)
+  }
+
+  #finalName {
+    font-size: clamp(1.4rem, 7.5vw, 4.5rem);
+    line-height: 1.5;
+    padding: .28em .16em .18em
+  }
+
+  #finalTitle,
+  #finalName {
+    font-family: var(--script);
+    font-style: normal;
+    font-weight: 700;
+    letter-spacing: 0
+  }
+
+  .sub {
+    max-width: 620px;
+    line-height: 1.6
+  }
+
+  .final-memories,
+  .final-letter {
+    width: min(100%, 820px);
+    padding: clamp(18px, 4vw, 34px);
+    border: 1px solid rgba(255, 255, 255, .16);
+    border-radius: 28px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, .09), rgba(255, 255, 255, .035));
+    box-shadow: 0 18px 48px rgba(8, 3, 20, .24), inset 0 1px rgba(255, 255, 255, .08);
+    backdrop-filter: blur(8px)
+  }
+
+  .final-memories {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px
+  }
+
+  .gallery-label {
+    margin: 0
+  }
+
+  .photos {
+    width: 100%;
+    max-width: 720px;
+    padding: 8px 0 10px;
+    gap: clamp(18px, 3vw, 30px) 24px
+  }
+
+  .constellation {
+    width: min(100%, 560px);
+    margin: 0 auto
+  }
+
+  .final-letter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px
+  }
+
+  .envelope {
+    margin: 0
+  }
+
+  .heart {
+    line-height: 1
+  }
+
+  .note {
+    width: 100%;
+    margin: 0
+  }
+
+  .sign {
+    margin: 0
+  }
+
+  .finale {
+    margin: 8px 0 0
+  }
+
+  @media (max-width:480px) {
+    #final {
+      padding: 32px 14px 44px;
+      gap: 24px
+    }
+
+    .final-memories,
+    .final-letter {
+      padding: 18px 14px;
+      border-radius: 22px
+    }
+
+    .photos {
+      gap: 20px 12px
+    }
+
+    .polaroid {
+      width: min(150px, 40vw)
+    }
+
+    .constellation {
+      height: 180px
+    }
+
+    .finale {
+      gap: 10px
+    }
+
+    .env-body {
+      width: 170px;
+      height: 116px
+    }
+  }
+
+  /* Keep the final birthday screen together without clipping on smaller viewports. */
+  #final {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
+    grid-template-areas: "header header" "memories letter" "footer footer";
+    align-content: space-between;
+    align-items: stretch;
+    justify-items: center;
+    gap: clamp(10px, 2vh, 20px);
+    padding: clamp(14px, 2vh, 24px) clamp(14px, 3vw, 40px);
+  }
+
+  #final.active {
+    display: grid
+  }
+
+  .birthday-header {
+    grid-area: header
+  }
+
+  .birthday-heading {
+    margin-top: 0
+  }
+
+  .final-memories {
+    grid-area: memories
+  }
+
+  .final-letter {
+    grid-area: letter
+  }
+
+  .final-footer {
+    grid-area: footer;
+    justify-self: center;
+    margin: 0;
+    padding: 7px 18px 8px;
+    border: 1px solid rgba(255, 235, 197, .45);
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(58, 15, 43, .76), rgba(92, 24, 57, .7));
+    box-shadow: 0 5px 18px rgba(31, 8, 28, .32), inset 0 1px rgba(255, 255, 255, .2);
+    color: #ffe7b0;
+    font-family: var(--script);
+    font-size: 1.28rem;
+    line-height: 1;
+    letter-spacing: .025em;
+    text-align: center;
+    text-shadow: 0 1px 2px rgba(30, 5, 20, .75), 0 0 10px rgba(255, 220, 165, .35)
+  }
+
+  .final-memories,
+  .final-letter {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    padding: clamp(12px, 1.8vw, 22px);
+    gap: 10px
+  }
+
+  .photos {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
+    padding: 0
+  }
+
+  .polaroid {
+    width: 100%;
+    min-width: 0;
+    padding: 7px 7px 5px
+  }
+
+  .polaroid figcaption {
+    font-size: clamp(.65rem, 1vw, .85rem);
+    line-height: 1.15
+  }
+
+  .constellation {
+    width: 100%;
+    height: clamp(90px, 16vh, 140px)
+  }
+
+  .envelope {
+    gap: 5px
+  }
+
+  .env-body {
+    width: 160px;
+    height: 106px
+  }
+
+  .note {
+    min-height: 0;
+    padding: clamp(14px, 2vw, 24px);
+    font-size: clamp(1rem, 1.25vw, 1.15rem);
+    line-height: 1.5
+  }
+
+  .note p {
+    margin-bottom: .55em
+  }
+
+  .note p:first-child {
+    font-size: clamp(1.4rem, 2vw, 2rem);
+    line-height: 1.2;
+    padding-bottom: .2em;
+    margin-bottom: .5em
+  }
+
+  .finale {
+    margin: 4px 0 0;
+    gap: 8px
+  }
+
+  @media (max-width:700px) {
+    #final {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: "header" "memories" "letter" "footer";
+      align-content: space-between;
+      gap: clamp(8px, 1.5vh, 14px);
+      padding: calc(10px + env(safe-area-inset-top, 0px)) 12px calc(10px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .birthday-header {
+      gap: 4px
+    }
+
+    .birthday-heading {
+      gap: 2px
+    }
+
+    .sub {
+      font-size: clamp(.78rem, 3vw, 1rem);
+      line-height: 1.25;
+      margin: 0
+    }
+
+    .final-memories,
+    .final-letter {
+      padding: 10px 12px;
+      border-radius: 20px;
+      gap: 6px
+    }
+
+    .gallery-label,
+    .section-label {
+      font-size: 1.2rem
+    }
+
+    .photos {
+      gap: 6px
+    }
+
+    .polaroid {
+      padding: 4px 4px 3px
+    }
+
+    .polaroid figcaption {
+      margin-top: 4px;
+      font-size: .68rem
+    }
+
+    .constellation {
+      height: clamp(72px, 10vh, 90px)
+    }
+
+    .env-body {
+      width: 145px;
+      height: 96px
+    }
+
+    .env-hint {
+      font-size: .85rem
+    }
+
+    .heart {
+      font-size: 1.35rem
+    }
+
+    .note {
+      padding: 12px;
+      font-size: .92rem;
+      line-height: 1.35
+    }
+
+    .note p:first-child {
+      font-size: 1.35rem
+    }
+
+    .finale .btn {
+      font-size: 1rem
+    }
+  }
+
+  #start {
+    overflow: clip;
+    padding: calc(12px + env(safe-area-inset-top, 0px)) 16px calc(12px + env(safe-area-inset-bottom, 0px));
+  }
+
+  #start .stage {
+    width: min(90vw, 460px);
+    height: min(420px, calc(100svh - 48px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)));
+  }
+
+  #start .start-box {
+    max-width: 100%;
+    padding: clamp(20px, 5vw, 34px) clamp(18px, 5vw, 28px)
+  }
+
+  #start h1 {
+    width: max-content;
+    max-width: none;
+    font-size: clamp(1rem, 5.6vw, 2.4rem);
+    line-height: 1.15;
+    white-space: nowrap
+  }
+
+  #blow {
+    justify-content: flex-start;
+    padding: calc(12px + env(safe-area-inset-top, 0px)) 16px calc(12px + env(safe-area-inset-bottom, 0px));
+  }
+
+  #blow .prompt {
+    max-width: 100%;
+    font-size: clamp(2.5rem, 12vw, 4.2rem);
+    line-height: 1.1
+  }
+</style>
 </head>
 <body>
+  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="svg-defs">
+    <defs>
+      <g id="shape-butterfly-1">
+        <path class="path" fill="" clip-rule="evenodd" d="M8.65,2.85c0.934-0.2,2.15-0.333,3.65-0.4c1.534-0.1,2.667-0.083,3.4,0.05
+          c1.533,0.267,3.45,0.767,5.75,1.5c2.466,0.8,4.35,1.617,5.65,2.45c2.066,1.2,3.883,2.383,5.45,3.55c2.567,2.1,4.35,3.8,5.35,5.1
+          l2.1,2.5c0.933,1.167,1.517,1.983,1.75,2.45c0.333,0.767,1.083,2.117,2.25,4.05c0.233,0.467,0.717,1.683,1.45,3.65
+          c0.733,2.067,1.2,3.45,1.4,4.15c0.467,1.733,0.917,3.767,1.35,6.1l0.4,3.85l-0.25-3.4c-0.6-5.967-1.267-10.25-2-12.85
+          c-0.733-2.434-2.167-5.467-4.3-9.1c-0.966-1.667-1.566-3-1.8-4c-0.233-0.933-0.1-1.267,0.4-1c1.3,0.733,2.917,3.867,4.85,9.4
+          c1.667,4.7,2.85,11.2,3.55,19.5c0.567,6.934,0.667,11.917,0.3,14.95l0.2,0.05c0.231,0,0.348-0.05,0.35-0.15v0.05l0.1,0.05v27.4
+          c-0.032-0.018-0.065-0.035-0.1-0.05v-0.05c-0.7,0.267-0.983,0.117-0.85-0.45c0.067-0.333,0.017-0.817-0.15-1.45
+          c-0.2-0.6-0.316-0.983-0.35-1.15l-0.5-1.65c-0.533-2.967-0.833-5.034-0.9-6.2c-0.1-1.533-0.133-2.4-0.1-2.6
+          c0-0.933,0.167-1.667,0.5-2.2c0.567-0.9,0.684-1.75,0.35-2.55c-0.167-0.367-0.367-0.6-0.6-0.7c-0.333-0.133-0.517,0.283-0.55,1.25
+          c-0.033,1.533-0.167,2.9-0.4,4.1c-0.1,2.3-0.267,3.684-0.5,4.15c-0.333,0.667-1.25,2.95-2.75,6.85c-1.167,2.8-2.233,4.817-3.2,6.05
+          c-0.9,1.2-1.583,2.1-2.05,2.7c-0.8,1-1.434,1.667-1.9,2c-2.067,1.333-3.633,2.067-4.7,2.2c-3.033,0.267-4.95,0.317-5.75,0.15
+          c-0.8-0.167-1.383-0.217-1.75-0.15c-0.533,0.1-1.033,0.45-1.5,1.05c-0.5,0.667-1.217,1.284-2.15,1.85
+          c-0.934,0.567-1.85,0.934-2.75,1.1c-2.467,0.433-4.45,0.25-5.95-0.55c-0.7-0.4-1.467-1.15-2.3-2.25c-0.6-0.867-1.033-1.567-1.3-2.1
+          c-0.267-0.667-0.483-1.483-0.65-2.45c-0.3-1.467-0.383-2.717-0.25-3.75c0.267-1.9,0.45-3.05,0.55-3.45
+          c0.233-1.233,0.566-2.333,1-3.3C9.25,77.45,9.767,76.4,10,76c0.667-1.233,1.55-2.583,2.65-4.05c1.1-1.434,2.184-2.583,3.25-3.45
+          c0.367-0.3,1.15-0.867,2.35-1.7c0.767-0.566,1.917-1.25,3.45-2.05c1.733-0.933,3.267-1.633,4.6-2.1
+          c2.133-0.733,4.534-1.467,7.2-2.2c0.467-0.1,1.517-0.3,3.15-0.6c0.967-0.233,0.4-0.4-1.7-0.5c-2.434-0.1-4.534-0.3-6.3-0.6
+          c-1.566-0.267-3.383-0.7-5.45-1.3c-2.8-0.8-4.467-1.317-5-1.55c-1.567-0.667-3.2-1.75-4.9-3.25c-1.733-1.533-3-3.1-3.8-4.7
+          c-0.533-1.067-0.967-2.434-1.3-4.1c-0.233-1.067-0.3-2.133-0.2-3.2c0.133-0.833,0.183-1.3,0.15-1.4v-0.6
+          c-2.467-3.233-3.983-5.433-4.55-6.6c-0.533-1.033-0.883-1.833-1.05-2.4c-0.3-0.867-0.466-1.85-0.5-2.95
+          c-0.033-2.367,0.034-4.117,0.2-5.25c0.3-1.034,0.483-1.8,0.55-2.3c0.167-0.867,0.034-1.533-0.4-2c-0.6-0.7-1.133-1.517-1.6-2.45
+          c-0.566-1.133-0.833-2.117-0.8-2.95c0.033-1.333,0.167-2.367,0.4-3.1c0.367-1.267,1.05-2.267,2.05-3
+          C4.417,4.25,6.483,3.317,8.65,2.85z"/>
+      </g>
+      <linearGradient id="wing-grad-0" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#fff176"/><stop offset="45%" stop-color="#ff2d78"/><stop offset="100%" stop-color="#6a0dad"/>
+      </linearGradient>
+      <linearGradient id="wing-grad-1" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#9dfcff"/><stop offset="45%" stop-color="#00b4ff"/><stop offset="100%" stop-color="#0b1a3a"/>
+      </linearGradient>
+      <linearGradient id="wing-grad-2" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#f9d4ff"/><stop offset="45%" stop-color="#c026ff"/><stop offset="100%" stop-color="#3a0066"/>
+      </linearGradient>
+      <linearGradient id="wing-grad-3" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#ddff9c"/><stop offset="45%" stop-color="#17d96b"/><stop offset="100%" stop-color="#02402a"/>
+      </linearGradient>
+      <linearGradient id="wing-grad-4" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#fff2a8"/><stop offset="45%" stop-color="#ffb400"/><stop offset="100%" stop-color="#7a2e00"/>
+      </linearGradient>
+      <linearGradient id="wing-grad-5" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#ffd3c2"/><stop offset="45%" stop-color="#ff4b2b"/><stop offset="100%" stop-color="#7a0a0a"/>
+      </linearGradient>
+      <linearGradient id="wing-grad-6" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#c2fff0"/><stop offset="45%" stop-color="#00e0c6"/><stop offset="100%" stop-color="#003d39"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <!-- Full-page background from butterfly_1.html: sky + rotating skybox cube + roaming butterflies -->
+  <section class="full-bg"></section>
+  <section class="full-bg-scene">
+    <div class="cube skybox">
+      <var class="scale">
+        <figure class="face front"></figure>
+        <figure class="face back"></figure>
+        <figure class="face right"></figure>
+        <figure class="face left"></figure>
+        <figure class="face top"></figure>
+        <figure class="face bottom"></figure>
+      </var>
+    </div>
+    <div id="full-bg-butterflies"></div>
+  </section>
+
+  <!-- Candle-screen-only background: plain black with drifting fireflies -->
+  <section class="blow-bg">
+    <div id="fireflies"></div>
+  </section>
+
+  <!-- Final-screen-only: soft hearts drifting upward -->
+  <section class="heart-rain" id="heartRain"></section>
+
   <div id="sparkles" class="sparkles"></div>
   <div id="balloons" class="balloons"></div>
   <canvas id="fx"></canvas>
@@ -25,8 +2940,13 @@
   <main>
     <!-- Screen 1: start -->
     <section id="start" class="screen active">
-      <h1 id="startTitle">I made something for you</h1>
-      <button id="startBtn" class="btn" type="button">Start</button>
+      <div class="stage">
+        <div id="start-butterflies" class="scene3d-mini"></div>
+        <div class="start-box">
+          <h1 id="startTitle">I made something for you</h1>
+          <button id="startBtn" class="btn" type="button">Start</button>
+        </div>
+      </div>
     </section>
 
     <!-- Screen 2: countdown + candle -->
@@ -45,6 +2965,11 @@
             <div class="pool"></div>
           </div>
         </div>
+        <!-- Butterfly-to-candle: lands beside the flame, then flies off when it's blown out -->
+        <div class="candle-butterfly" id="candleButterfly">
+          <div class="wing left variant-4"><svg viewBox="0 0 50 100"><use xlink:href="#shape-butterfly-1"></use></svg></div>
+          <div class="wing right variant-4"><svg viewBox="0 0 50 100"><use xlink:href="#shape-butterfly-1"></use></svg></div>
+        </div>
       </div>
       <div class="meter" id="meter"><i id="meterFill"></i></div>
       <p id="hint" class="hint"></p>
@@ -53,15 +2978,64 @@
     <!-- Screen 3: wishes + photos -->
     <section id="final" class="screen">
       <div class="lights" id="lights"></div>
-      <h1 id="finalTitle"></h1>
-      <h2 id="finalName"></h2>
-      <div class="photos" id="photos"></div>
-      <p class="sub" id="subtitle"></p>
-      <div class="heart">♥︎</div>
-      <div class="note" id="note"></div>
-      <p class="sign" id="sign"></p>
+      <header class="birthday-header">
+        <div class="birthday-heading">
+          <h1 id="finalTitle"></h1>
+          <h2 id="finalName"></h2>
+        </div>
+        <p class="sub" id="subtitle"></p>
+      </header>
+
+      <section class="final-memories" aria-label="Birthday memories">
+        <h3 class="section-label gallery-label">A few favorite moments</h3>
+        <div class="photos" id="photos"></div>
+        <h3 class="section-label" id="constellationLabel" hidden>A few stars, just for you ✨</h3>
+        <div class="love-scene">
+          <canvas id="love-heart" aria-hidden="true"></canvas>
+          <div class="constellation" id="constellation"></div>
+          <div id="starPopup" class="star-popup" hidden></div>
+        </div>
+      </section>
+
+      <section class="final-letter" aria-label="Birthday letter">
+        <div class="envelope" id="envelope">
+          <div class="env-body">
+            <div class="env-back"></div>
+            <div class="env-ribbon"></div>
+            <div class="env-flap" id="envFlap"></div>
+            <div class="env-seal" id="envSeal"></div>
+            <div class="env-letter" id="envLetterPeek"></div>
+          </div>
+          <p class="env-hint" id="envHint">Tap to open the letter</p>
+        </div>
+        <div class="heart">♥︎</div>
+        <div class="note" id="note" hidden></div>
+        <p class="sign" id="sign" hidden></p>
+
+        <div class="finale" id="finale" hidden>
+          <button id="keepsakeBtn" class="btn" type="button">📥 Save keepsake card</button>
+          <button id="replayBtn" class="btn" type="button">🔁 Replay</button>
+        </div>
+      </section>
+
+      <p class="final-footer" id="finalFooter"></p>
     </section>
   </main>
-  <script src="script.js"></script>
+
+  <!-- Memory gallery lightbox -->
+  <div id="lightbox" class="lightbox" hidden>
+    <button id="lbClose" class="lb-close" type="button" aria-label="Close">✕</button>
+    <button id="lbPrev" class="lb-nav lb-prev" type="button" aria-label="Previous">‹</button>
+    <figure class="lb-figure">
+      <img id="lbImg" class="lb-img" alt="">
+      <figcaption id="lbCaption" class="lb-caption"></figcaption>
+    </figure>
+    <button id="lbNext" class="lb-nav lb-next" type="button" aria-label="Next">›</button>
+  </div>
+
+  <!-- Off-screen canvas used only to render the downloadable keepsake card -->
+  <canvas id="keepsakeCanvas" width="1000" height="1400" hidden></canvas>
+
+  <script src="script.js" defer></script>
 </body>
 </html>
